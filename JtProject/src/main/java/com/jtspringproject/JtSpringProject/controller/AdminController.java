@@ -11,11 +11,12 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class AdminController {
 	int adminlogcheck = 0;
-	String usernameforclass = "";
+	public static String usernameforclass = "";
 
-	public String getUsernameForClass() {
-		return this.usernameforclass;
+	public static void setUsername (String usernameforclass){
+		AdminController.usernameforclass = usernameforclass;
 	}
+
 	@RequestMapping(value = {"/", "/logout"})
 	public String returnIndex() {
 		adminlogcheck = 0;
@@ -47,12 +48,13 @@ public class AdminController {
 	public String userlogin(@RequestParam("username") String username, @RequestParam("password") String pass, Model model) {
 
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 			Statement stmt = con.createStatement();
 			ResultSet rst = stmt.executeQuery("select * from users where username = '" + username + "' and password = '" + pass + "' ;");
 			if (rst.next()) {
 				usernameforclass = rst.getString(2);
+				UserController.setUsername(usernameforclass);
+				AdminController.setUsername(usernameforclass);
 				return "redirect:/index";
 			} else {
 				model.addAttribute("failMessage", "Invalid Username or Password");
@@ -67,6 +69,21 @@ public class AdminController {
 
 	}
 
+	public static int getUserID() {
+		int userID = 0;
+		try {
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
+			Statement stmt = con.createStatement();
+			ResultSet rst = stmt.executeQuery("select * from users where username = '" + usernameforclass + "';");
+			if(rst.next()) {
+				userID = rst.getInt(1);
+			}
+		}
+		catch (Exception e) {
+
+		}
+		return userID;
+	}
 
 	@GetMapping("/admin")
 	public String adminlogin(Model model) {
@@ -125,13 +142,16 @@ public class AdminController {
 	@GetMapping("/admin/categories/delete")
 	public String removeCategoryDb(@RequestParam("id") int id) {
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 			Statement stmt = con.createStatement();
 
+			// Remove category from categories
 			PreparedStatement pst = con.prepareStatement("delete from categories where categoryid = ? ;");
 			pst.setInt(1, id);
 			int i = pst.executeUpdate();
+
+			// Update suggested item
+			AdminController.updateProductPair();
 
 		} catch (Exception e) {
 			System.out.println("Exception:" + e);
@@ -142,7 +162,6 @@ public class AdminController {
 	@GetMapping("/admin/categories/update")
 	public String updateCategoryDb(@RequestParam("categoryid") int id, @RequestParam("categoryname") String categoryname) {
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 			Statement stmt = con.createStatement();
 
@@ -172,7 +191,6 @@ public class AdminController {
 		String pname, pdescription, pimage;
 		int pid, pprice, pweight, pquantity, pcategory;
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 			Statement stmt = con.createStatement();
 			Statement stmt2 = con.createStatement();
@@ -273,36 +291,37 @@ public class AdminController {
 		}
 	}
 
-	public static void getProductPrice() {
-		try {
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","dominopassword");
-			Statement stmt = con.createStatement();
-
-
-		}
-		catch(Exception e) {
-			System.out.println("Exception:" + e);
-		}
-	}
-
 	@GetMapping("/admin/products/delete")
 	public String removeProductDb(@RequestParam("id") int id) {
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 
 
+			// Remove product as tuple from ProductMatrix
+			PreparedStatement removeFromPMRowPst = con.prepareStatement("DELETE FROM ProductMatrix WHERE product = ?;");
+			removeFromPMRowPst.setInt(1, id);
+			removeFromPMRowPst.executeQuery();
+
+			// Remove product as attribute from ProductMatrix
+			PreparedStatement addToPMColumnPst = con.prepareStatement("ALTER TABLE ProductMatrix DROP COLUMN '?';");
+			String productName = "p" + id;
+			addToPMColumnPst.setString(1, productName);
+			addToPMColumnPst.executeQuery();
+
+			// Remove product from products
 			PreparedStatement pst = con.prepareStatement("delete from products where id = ? ;");
 			pst.setInt(1, id);
 			int i = pst.executeUpdate();
 
+			// Update suggested item
+			AdminController.updateProductPair();
 		} catch (Exception e) {
 			System.out.println("Exception:" + e);
 		}
 		return "redirect:/admin/products";
 	}
 
-	@PostMapping("/admin/products")
+		@PostMapping("/admin/products")
 	public String postproduct() {
 		return "redirect:/admin/categories";
 	}
@@ -315,6 +334,7 @@ public class AdminController {
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("select * from categories where name = '" + catid + "';");
 			if (rs.next()) {
+				// Add product to products
 				int categoryid = rs.getInt(1);
 
 				PreparedStatement pst = con.prepareStatement("insert into products(name,image,categoryid,quantity,price,weight,description) values(?,?,?,?,?,?,?);");
@@ -326,12 +346,67 @@ public class AdminController {
 				pst.setInt(6, weight);
 				pst.setString(7, description);
 				int i = pst.executeUpdate();
+
+
+				// Get id of newly added product
+				PreparedStatement getItemIDPst = con.prepareStatement("SELECT id FROM products WHERE name = /'?';");
+				getItemIDPst.setString(1, name);
+				ResultSet getItemIDRst = getItemIDPst.executeQuery();
+				int itemID = getItemIDRst.getInt("id");
+
+				// Add newly added product as tuple in ProductMatrix
+				PreparedStatement addToPMRowPst = con.prepareStatement("INSERT INTO ProductMatrix (product) VALUES (?);");
+				addToPMRowPst.setInt(1, itemID);
+				addToPMRowPst.executeQuery();
+
+				// Add newly added product as attribute in ProductMatrix
+				PreparedStatement addToPMColumnPst = con.prepareStatement("ALTER TABLE ProductMatrix ADD '?' int default 0;");
+				String productName = "p" + itemID;
+				addToPMColumnPst.setString(1, productName);
+				addToPMColumnPst.executeQuery();
 			}
 		} catch (Exception e) {
 			System.out.println("Exception:" + e);
 		}
 		return "redirect:/admin/products";
 	}
+
+	public static void updateProductPair() {
+		try {
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
+			Statement stmt = con.createStatement();
+
+			// Parse through all tuples of ProductMatrix
+			ResultSet allProductsRst = stmt.executeQuery("SELECT * FROM ProductMatrix;");
+			while(allProductsRst.next()) {
+				// Get the ID and attribute name of the current product
+				int productID = allProductsRst.getInt("product");
+				String productName = "p" + productID;
+
+				// Find the other product that sold the most with the current product
+				PreparedStatement eachProductPst = con.prepareStatement("SELECT product FROM ProductMatrix GROUP BY product HAVING MAX(?);");
+				eachProductPst.setString(1, productName);
+				ResultSet eachProductRst = eachProductPst.executeQuery();
+
+				// Check if the query resulted in a tuple
+				if(eachProductRst.next()) {
+					// Get the id of the suggested product
+					int pairID = eachProductRst.getInt("product");
+
+					// Update the productPair value of the current product
+					PreparedStatement newPairPst = con.prepareStatement("UPDATE products SET productPair = ? WHERE id = ?;");
+					newPairPst.setInt(1, pairID);
+					newPairPst.setInt(2, productID);
+					newPairPst.executeQuery();
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("Exception:"+e);
+		}
+	}
+
 
 	@GetMapping("/admin/customers")
 	public String getCustomerDetail() {
@@ -361,7 +436,6 @@ public class AdminController {
 	public String profileDisplay(Model model) {
 		String displayusername, displaypassword, displayemail, displayaddress;
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 			Statement stmt = con.createStatement();
 			ResultSet rst = stmt.executeQuery("select * from users where username = '" + usernameforclass + "';");
@@ -390,20 +464,17 @@ public class AdminController {
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 			Statement stmt = con.createStatement();
-			Statement stmt2 = con.createStatement();
-			int idh = 0;
-			String id = "select user_id from users where username = '" + usernameforclass + "'";
-			ResultSet cartResult = stmt.executeQuery("SELECT c.productID, c.quantity, p.name, p.price FROM Cart c " +
+			ResultSet cartResult = stmt.executeQuery("SELECT p.name, c.quantity, p.price FROM Cart c " +
 					"JOIN products p ON c.productID = p.id " +
-					"WHERE c.userID = '" + id +"'");
+					"WHERE c.userID = " + getUserID());
+
+
 			while (cartResult.next()) {
-				int productID = cartResult.getInt("productID");
 				int quantity = cartResult.getInt("quantity");
 				String productName = cartResult.getString("name");
 				double productPrice = cartResult.getDouble("price");
-				double totalPrice = productPrice * quantity;
 
-				cartItems.add(new CartItem(productName, quantity, totalPrice));
+				cartItems.add(new CartItem(productName, quantity, productPrice));
 			}
 		}
 		catch (Exception e) {

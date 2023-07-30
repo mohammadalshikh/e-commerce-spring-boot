@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class UserController{
-	static String username = "";
+	static String usernameforclass = "";
 
-	public static void setUsername(String username) {
-		UserController.username = username;
+	public static void setUsername(String usernameforclass) {
+		UserController.usernameforclass = usernameforclass;
 	}
 
 
@@ -45,15 +45,15 @@ public class UserController{
 		Set<Integer> products = new HashSet<Integer>();
 
 		try {
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","dominopassword");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
 			Statement stmt = con.createStatement();
 
 			// Select items from Cart
-			ResultSet cartItemsRst = stmt.executeQuery("SELECT userId, productID, quantity FROM Cart WHERE userId = (SELECT user_id FROM users WHERE username = '" + UserController.username + "');");
+			ResultSet cartItemsRst = stmt.executeQuery("SELECT userId, productID, quantity FROM Cart WHERE userId = (SELECT user_id FROM users WHERE username = '" + usernameforclass + "');");
 
 			// Get last transactionID used
-			PreparedStatement tIDPst = con.prepareStatement("SELECT MAX(transactionID) AS max FROM TransactionHistory WHERE userID = (SELECT user_id FROM users WHERE username = '" + UserController.username + "'");
-			tIDPst.setString(1, UserController.username);
+			PreparedStatement tIDPst = con.prepareStatement("SELECT MAX(transactionID) AS max FROM TransactionHistory WHERE userID = (SELECT user_id FROM users WHERE username = '" + usernameforclass + "'");
+			tIDPst.setString(1, usernameforclass);
 			ResultSet tIDRst = tIDPst.executeQuery();
 			// Verify that there was a previous transactionID
 			if(tIDRst.next()) {
@@ -97,9 +97,9 @@ public class UserController{
 			}
 
 			// Update product stock
-			AdminController.updateProductStock(UserController.username);
+			AdminController.updateProductStock(usernameforclass);
 			// Update user coupons
-			AdminController.updateUserCoupons(UserController.username);
+			AdminController.updateUserCoupons(usernameforclass);
 			// Delete items from Cart
 			this.clearcart();
 		}
@@ -188,7 +188,7 @@ public class UserController{
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
 			Statement stmt = con.createStatement();
-			ResultSet rst = stmt.executeQuery("delete from Cart where userID = (select user_id from users where username = '" + username + "');");
+			ResultSet rst = stmt.executeQuery("delete from Cart where userID = (select user_id from users where username = '" + usernameforclass + "');");
 
 			if (rst.next()) {
 				int userID = rst.getInt("user_id");
@@ -209,12 +209,12 @@ public class UserController{
 	public String moveCustomToCart(Model model) {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "Swisschoc2@");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 			Statement stmt = con.createStatement();
 
 			// Fetch existing items and quantities from Cart
 			Map<String, Integer> cartItems = new HashMap<>();
-			ResultSet cartRs = stmt.executeQuery("SELECT productID, quantity FROM Cart WHERE userID = (SELECT user_id FROM users WHERE username = '" + UserController.username + "');");
+			ResultSet cartRs = stmt.executeQuery("SELECT productID, quantity FROM Cart WHERE userID = (SELECT user_id FROM users WHERE username = '" + usernameforclass + "');");
 			while (cartRs.next()) {
 				String productID = cartRs.getString("productID");
 				int quantity = cartRs.getInt("quantity");
@@ -222,7 +222,7 @@ public class UserController{
 			}
 
 			// Fetch items and quantities from CustomCart
-			ResultSet customCartRs = stmt.executeQuery("SELECT productID, quantity FROM CustomCart WHERE username = '" + UserController.username + "';");
+			ResultSet customCartRs = stmt.executeQuery("SELECT productID, quantity FROM CustomCart WHERE username = '" + usernameforclass + "';");
 			while (customCartRs.next()) {
 				String productID = customCartRs.getString("productID");
 				int quantity = customCartRs.getInt("quantity");
@@ -232,9 +232,9 @@ public class UserController{
 					int currentQuantity = cartItems.get(productID);
 					int newQuantity = currentQuantity + quantity;
 					// Update the quantity in the Cart table
-					stmt.executeUpdate("UPDATE Cart SET quantity = " + newQuantity + " WHERE userID = (SELECT user_id FROM users WHERE username = '" + UserController.username + "') AND productID = '" + productID + "';");
+					stmt.executeUpdate("UPDATE Cart SET quantity = " + newQuantity + " WHERE userID = (SELECT user_id FROM users WHERE username = '" + usernameforclass + "') AND productID = '" + productID + "';");
 				} else {
-					stmt.executeUpdate("INSERT INTO Cart (userID, productID, quantity) VALUES ((SELECT user_id FROM users WHERE username = '" + UserController.username + "'), '" + productID + "', " + quantity + ");");
+					stmt.executeUpdate("INSERT INTO Cart (userID, productID, quantity) VALUES ((SELECT user_id FROM users WHERE username = '" + usernameforclass + "'), '" + productID + "', " + quantity + ");");
 				}
 			}
 

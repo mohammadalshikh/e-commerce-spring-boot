@@ -196,7 +196,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
+                        <a class="nav-link" href="/index">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/shop">Shop</a>
@@ -224,7 +224,7 @@
                         <input type="text" class="search-input" placeholder="Search products..." id="searchInput">
                         <ul style="color: #292929" id="searchResults"></ul>
                         <a class="search-btn" href="#" id="viewAllBtn">View all results</a>
-                        <br><br><br><br><br>
+                        <br><br><br><br>
                     </div>
                 </div>
             </div>
@@ -234,7 +234,7 @@
 
 <section class="restaurant-section">
     <div class="container">
-        <br>
+        <br><br>
         <div class="row">
             <div class="col-md-4">
                 <div class="restaurant-item">
