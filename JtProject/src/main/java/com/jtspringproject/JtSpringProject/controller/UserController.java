@@ -85,7 +85,7 @@ public class UserController{
 						if(p != q) {
 							// Update ProductMatrix
 							PreparedStatement insertMatrixPst = con.prepareStatement("UPDATE ProductMatrix SET ? = ? WHERE productID = ?");
-							ResultSet oldCountRst = stmt.executeQuery("SELECT " + q + "FROM TransactionHistory WHERE productID = " + p + ";");
+							ResultSet oldCountRst = stmt.executeQuery("SELECT " + q + " FROM TransactionHistory WHERE productID = " + p + ";");
 							int oldCount = oldCountRst.getInt(q);
 							insertMatrixPst.setInt(1, q);
 							insertMatrixPst.setInt(2, (oldCount + 1));

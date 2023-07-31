@@ -156,3 +156,5 @@ ALTER TABLE products ADD FOREIGN KEY (productPair) REFERENCES products(id);
 
 ALTER TABLE products ADD suggestedItem INT DEFAULT 0;
 ALTER TABLE products ADD FOREIGN KEY (suggestedItem) REFERENCES products(id);
+
+ALTER TABLE products modify price float DEFAULT 0;

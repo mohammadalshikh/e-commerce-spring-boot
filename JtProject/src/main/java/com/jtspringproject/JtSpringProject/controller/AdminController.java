@@ -407,22 +407,28 @@ public class AdminController {
     public static float getProductPrice(int productID, int quantity) {
 
 		// Create a variable to hold the running total
-		float productPrice = 0;
+		float productPrice = 30;
 		try {
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
             Statement stmt = con.createStatement();
 
 			// Obtain all details of this product
-            ResultSet productDetails = stmt.executeQuery("SELECT * FROM products WHERE productID = " + productID + ";");
+            ResultSet productDetails = stmt.executeQuery("SELECT * FROM products WHERE id = " + productID + ";");
 
-			// Set price
-            productPrice = productDetails.getInt("price");
+			double discountFromPrice = 69;
+
+			if(productDetails.next()) {
+				productPrice = productDetails.getFloat("price");
+				discountFromPrice = 1-productDetails.getDouble("discount");
+			}
+
 
 			// Multiply by quantity
             productPrice *= quantity;
 
 			// Multiply by 1 - discount (discount will be 0 in the case that there is no discount)
-            double discountFromPrice = 1-productDetails.getDouble("discount");
+
+			System.out.println(discountFromPrice);
             productPrice *= discountFromPrice;
 			return productPrice;
         }
@@ -526,9 +532,9 @@ public class AdminController {
 			while (cartResult.next()) {
 				int quantity = cartResult.getInt("quantity");
 				String productName = cartResult.getString("name");
-				double productPrice = cartResult.getDouble("price");
+				float productPrice = cartResult.getFloat("price");
 				int productID = cartResult.getInt("productID");
-				double totalPrice = productPrice * quantity;
+				float totalPrice = getProductPrice(productID, quantity);
 
 				cartItems.add(new CartItem(productName, quantity, totalPrice, productID));
 			}
@@ -538,6 +544,7 @@ public class AdminController {
 		}
 
 		model.addAttribute("cartItems", cartItems);
+		model.addAttribute("subTotal", getCartPrice(usernameforclass));
 
 		return "cart";
 	}

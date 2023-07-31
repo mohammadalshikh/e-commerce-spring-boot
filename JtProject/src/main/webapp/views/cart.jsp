@@ -196,7 +196,10 @@
         </tbody>
     </table>
     <p class="empty-cart-message" id="emptyCartMessage">Your cart is currently empty, add some products to your cart.</p>
-    <p>Subtotal: $<span id="subTotal">0</span></p>
+    <p>Subtotal: $${subTotal}</p>
+    <form action="/buy" method="get">
+        <button type="submit" class="btn btn-delete">Buy</button>
+    </form>
 </div>
 
 
@@ -219,19 +222,7 @@
             clearCartButton.style.display = 'none';
             emptyCartMessage.style.display = 'block';
         }
-        const cartItems = document.querySelectorAll("#cartItems tr");
-        let subTotalValue = 0;
 
-        cartItems.forEach((item) => {
-            const totalPriceElement = item.querySelector("td:nth-child(3)");
-            if (totalPriceElement) {
-                const totalPrice = parseFloat(totalPriceElement.innerText.replace("$", ""));
-                subTotalValue += totalPrice;
-            }
-        });
-
-        const subTotalElement = document.getElementById("subTotal");
-        subTotalElement.innerText = subTotalValue.toFixed(2);
 </script>
 </body>
 </html>
