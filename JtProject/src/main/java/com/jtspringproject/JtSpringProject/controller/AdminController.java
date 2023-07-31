@@ -558,37 +558,4 @@ public class AdminController {
 		return "updateProfile";
 	}
 
-	@GetMapping("/cart")
-	public String viewCart(Model model) {
-		ArrayList<CartItem> cartItems = new ArrayList<>();
-		try {
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
-			Statement stmt = con.createStatement();
-			ResultSet cartResult = stmt.executeQuery("SELECT p.name, c.quantity, p.price, c.productID FROM Cart c " +
-					"JOIN products p ON c.productID = p.id " +
-					"WHERE c.userID = " + getUserID());
-
-			double subTotal = 0;
-
-			while (cartResult.next()) {
-				int quantity = cartResult.getInt("quantity");
-				String productName = cartResult.getString("name");
-				float productPrice = cartResult.getFloat("price");
-				int productID = cartResult.getInt("productID");
-				float totalPrice = getProductPrice(productID, quantity);
-
-				cartItems.add(new CartItem(productName, quantity, totalPrice, productID));
-			}
-		}
-		catch (Exception e) {
-			System.out.println("Exception:" + e);
-		}
-
-		model.addAttribute("cartItems", cartItems);
-		model.addAttribute("total", getCartPrice(usernameforclass));
-
-		return "cart";
-	}
-
-
 }
