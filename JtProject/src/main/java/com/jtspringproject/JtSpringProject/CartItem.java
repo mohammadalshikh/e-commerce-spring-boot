@@ -3,12 +3,14 @@ package com.jtspringproject.JtSpringProject;
 public class CartItem {
     private String productName;
     private int quantity;
-    private double totalPrice;
+    private float totalPrice;
+    private int productID;
 
-    public CartItem(String productName, int quantity, double totalPrice) {
+    public CartItem(String productName, int quantity, float totalPrice, int productID) {
         this.productName = productName;
         this.quantity = quantity;
         this.totalPrice = totalPrice;
+        this.productID = productID;
     }
 
     public String getProductName() {
@@ -17,7 +19,8 @@ public class CartItem {
     public int getQuantity() {
         return quantity;
     }
-    public double getTotalPrice() {
+    public float getTotalPrice() {
         return totalPrice;
     }
+    public int getProductID() {return productID;}
 }

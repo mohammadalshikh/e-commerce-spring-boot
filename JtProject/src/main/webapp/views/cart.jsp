@@ -13,6 +13,16 @@
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #F8F9FA;
+            display: flex;
+            flex-direction: column;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        .container {
+            flex: 1;
         }
 
         .bg-image-wrapper {
@@ -50,6 +60,37 @@
             font-weight: bold;
         }
 
+        .btn-delete {
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-action {
+            background-color: #2980b9;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .btn-action:hover {
+            color: #fff;
+        }
+
+        .empty-cart-message {
+            display: none;
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+        }
 
         .footer {
             background-color: #292929;
@@ -111,13 +152,24 @@
 <div class="container">
     <br><br>
     <h1>My Cart</h1>
-    <table class="table">
+
+    <div class="d-flex justify-content-end mb-3">
+        <form action="/clearcart" method="get">
+            <button type="submit" id="clearCart" class="btn btn-action">Clear Cart</button>
+        </form>
+        <form action="/movecustomtocart" method="get">
+            <button type="submit" class="btn btn-action">Add custom cart to cart</button>
+        </form>
+    </div>
+
+    <table class="table" id="cartTable">
         <thead>
         <br>
         <tr>
             <th>Product Name</th>
             <th>Quantity</th>
             <th>Total Price</th>
+            <th></th>
         </tr>
         <tr>
             <%-- Get the cartItems ArrayList from the Model object --%>
@@ -127,17 +179,29 @@
             <% for (CartItem item : cartItems) { %>
         </tr>
         <tr>
-            <td><%= item.getProductName() %></td>
+            <td id="1"><%= item.getProductName() %></td>
             <td><%= item.getQuantity() %></td>
-            <td><%= item.getTotalPrice() %></td>
+            <td>$<%= item.getTotalPrice() %></td>
+            <td>
+                <!-- Add the "Delete" button for each product -->
+                <form action="/deleteitem" method="get">
+                    <input type="hidden" name="productID" value="<%= item.getProductID() %>">
+                    <button type="submit" class="btn btn-delete">Delete</button>
+                </form>
+            </td>
         </tr>
         <% } %>
         </thead>
         <tbody id="cartItems">
-
         </tbody>
     </table>
+    <p class="empty-cart-message" id="emptyCartMessage">Your cart is currently empty, add some products to your cart.</p>
+    <p>Subtotal: $${subTotal}</p>
+    <form action="/buy" method="get">
+        <button type="submit" class="btn btn-delete">Buy</button>
+    </form>
 </div>
+
 
 <footer class="footer">
     <p>&copy; 2023 BestFood</p>
@@ -149,7 +213,15 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 <script>
-
+        const cartTable = document.getElementById("cartTable");
+        const clearCartButton = document.getElementById("clearCart");
+        const emptyCartMessage = document.getElementById("emptyCartMessage");
+        const tdFirst = document.getElementById("1");
+        if(tdFirst == null) {
+            cartTable.style.display = 'none';
+            clearCartButton.style.display = 'none';
+            emptyCartMessage.style.display = 'block';
+        }
 
 </script>
 </body>
