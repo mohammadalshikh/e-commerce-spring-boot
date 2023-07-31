@@ -6,6 +6,15 @@
     <title>BestFood</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ"
+          crossorigin="anonymous">
     <style>
 
         body {
@@ -14,10 +23,10 @@
         }
 
         .bg-image-wrapper {
-            background-image: url('https://img.freepik.com/free-photo/healthy-vegetables-wooden-table_1150-38014.jpg?w=1800&t=st=1690523378~exp=1690523978~hmac=c624907a88be9174dc918887e3d497ad40bd6a9a7f202ab738a9a9c34c0d73e3'); /* Set the background image */
-            background-size: cover; /* Adjust the background size to cover the entire container */
-            background-repeat: no-repeat; /* Prevent the background from repeating */
-            background-position: center top; /* Center the background image at the top */
+            background-image: url('../bg.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center top;
         }
 
         .navbar {
@@ -56,13 +65,8 @@
         .hero-text {
             font-size: 36px;
             font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
             margin-bottom: 20px;
-            color: white;
-        }
-
-        .hero-subtext {
-            font-size: 20px;
-            margin-bottom: 30px;
             color: white;
         }
 
@@ -143,8 +147,9 @@
         }
 
         .restaurant-item img {
-            max-width: 100%;
-            height: auto;
+            width: 300px;
+            height: 200px;
+            object-fit: cover;
             border-radius: 10px;
         }
 
@@ -179,6 +184,35 @@
             color: #e74c3c;
         }
 
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes fireAnimation {
+            0% { transform: scale(1) rotate(0); box-shadow: 0 0 5px 3px #FF4500; }
+            50% { transform: scale(1.2) rotate(5deg); box-shadow: 0 0 20px 10px #FF4500; }
+            100% { transform: scale(1) rotate(0); box-shadow: 0 0 5px 3px #FF4500; }
+        }
+
+        .hot-deals-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 20vh;
+        }
+
+        .hot-deals {
+            font-family: Montserrat, Arial, sans-serif;
+            font-size: 48px;
+            font-weight: bold;
+            color: #FF4500;
+            animation: fadeIn 1.5s ease-in-out, fireAnimation 2s infinite ease-in-out;
+            transform-style: preserve-3d;
+            font-style: italic;
+            text-shadow: 0 0 5px #FF4500;
+        }
     </style>
 </head>
 <body>
@@ -219,7 +253,6 @@
             <div class="row">
                 <div class="col-md-12">
                     <h1 class="hero-text">Food Ecommerce Simplified</h1>
-                    <p class="hero-subtext">Discover a bounty of fresh fruits and vegetables, premium meats, flavorful seasonings, and more.</p>
                     <div class="search-container">
                         <input type="text" class="search-input" placeholder="Search products..." id="searchInput">
                         <ul style="color: #292929" id="searchResults"></ul>
@@ -234,28 +267,53 @@
 
 <section class="restaurant-section">
     <div class="container">
-        <br><br>
+        <div class="hot-deals-container">
+            <div class="hot-deals">Hot Deals &#x1F525;</div>
+        </div>
         <div class="row">
             <div class="col-md-4">
                 <div class="restaurant-item">
-                    <img src="" alt="Restaurant 1">
-                    <h4>Restaurant 1</h4>
-                    <p>Address of Restaurant 1</p>
+                    <img src="https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1839&q=80" alt="Restaurant 1">
+
+
+
+
+                    <br>
+                    <div class="container">
+                        <br>
+                        <h4>Bananas</h4>
+                        <button type="button" class="btn btn-primary btn-lg">
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </button>
+                    </div>
+
+
+
+
+
+
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="restaurant-item">
-                    <img src="" alt="Restaurant 2">
-                    <h4>Restaurant 2</h4>
-                    <p>Address of Restaurant 2</p>
+                    <img src="https://images.unsplash.com/photo-1552010099-5dc86fcfaa38?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=928&q=80" alt="Restaurant 2">
+                    <br><br>
+                    <h4>Oranges</h4>
+                    <button type="button" class="btn btn-primary btn-lg">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
                 </div>
             </div>
+
+
+
+
             <div class="col-md-4">
                 <div class="restaurant-item">
-                    <img src="" alt="Restaurant 3">
-                    <h4>Restaurant 3</h4>
-                    <p>Address of Restaurant 3</p>
-                </div>
+                    <img src="https://images.unsplash.com/photo-1539248519424-b4b8f9a99a4a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80" alt="Restaurant 3">
+                    <br><br>
+                    <h4>Watermelon</h4>
+                    <button type="button" class="btn btn-primary btn-lg">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
             </div>
         </div>
     </div>
@@ -349,5 +407,15 @@
         }
     });
 </script>
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
 </body>
 </html>

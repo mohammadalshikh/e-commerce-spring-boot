@@ -422,13 +422,10 @@ public class AdminController {
 				discountFromPrice = 1-productDetails.getDouble("discount");
 			}
 
-
 			// Multiply by quantity
             productPrice *= quantity;
 
 			// Multiply by 1 - discount (discount will be 0 in the case that there is no discount)
-
-			System.out.println(discountFromPrice);
             productPrice *= discountFromPrice;
 			return productPrice;
         }
@@ -544,7 +541,7 @@ public class AdminController {
 		}
 
 		model.addAttribute("cartItems", cartItems);
-		model.addAttribute("subTotal", getCartPrice(usernameforclass));
+		model.addAttribute("total", getCartPrice(usernameforclass));
 
 		return "cart";
 	}

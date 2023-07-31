@@ -26,7 +26,7 @@
         }
 
         .bg-image-wrapper {
-            background-image: url('https://img.freepik.com/free-photo/healthy-vegetables-wooden-table_1150-38014.jpg?w=1800&t=st=1690523378~exp=1690523978~hmac=c624907a88be9174dc918887e3d497ad40bd6a9a7f202ab738a9a9c34c0d73e3'); /* Set the background image */
+            background-image: url('../bg.jpg'); /* Set the background image */
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center top;
@@ -85,11 +85,32 @@
             color: #fff;
         }
 
+        .btn-delete:hover {
+            color: #fff;
+        }
+
         .empty-cart-message {
             display: none;
             text-align: center;
             font-size: 18px;
             margin-top: 20px;
+        }
+
+        #total {
+            font-size: 24px;
+            text-align: center;
+        }
+
+        #buyButton {
+            display: block;
+            width: 200px; /* Set the width of the button */
+            margin: 0 auto; /* Center the button horizontally */
+            padding: 10px 20px; /* Add padding to the button */
+            font-size: 18px; /* Set the font size of the button text */
+        }
+
+        #buyButton:hover {
+            color: #fff;
         }
 
         .footer {
@@ -195,10 +216,11 @@
         <tbody id="cartItems">
         </tbody>
     </table>
+    <br>
     <p class="empty-cart-message" id="emptyCartMessage">Your cart is currently empty, add some products to your cart.</p>
-    <p>Subtotal: $${subTotal}</p>
+    <p id="total">Total: $${total}</p>
     <form action="/buy" method="get">
-        <button type="submit" class="btn btn-delete">Buy</button>
+        <button id="buyButton" type="submit" class="btn btn-delete">Buy</button>
     </form>
 </div>
 
@@ -217,10 +239,14 @@
         const clearCartButton = document.getElementById("clearCart");
         const emptyCartMessage = document.getElementById("emptyCartMessage");
         const tdFirst = document.getElementById("1");
+        const total = document.getElementById('total');
+        const buyButton = document.getElementById('buyButton');
         if(tdFirst == null) {
             cartTable.style.display = 'none';
             clearCartButton.style.display = 'none';
             emptyCartMessage.style.display = 'block';
+            total.style.display = 'none';
+            buyButton.style.display = 'none';
         }
 
 </script>

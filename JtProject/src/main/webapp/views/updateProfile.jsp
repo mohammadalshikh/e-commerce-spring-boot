@@ -1,67 +1,171 @@
-<!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
-          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BestFood</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #F8F9FA;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        .bg-image-wrapper {
+            background-image: url('../bg.jpg'); /* Set the background image */
+            background-size: cover; /* Adjust the background size to cover the entire container */
+            background-repeat: no-repeat; /* Prevent the background from repeating */
+            background-position: center top; /* Center the background image at the top */
+        }
+
+        .navbar {
+            background-color: transparent;
+            font-weight: 500;
+            font-size: 17px;
+        }
+
+        .navbar-brand {
+            font-family: 'Pacifico', cursive;
+            font-size: 28px;
+            color: #fff;
+        }
+
+        .navbar-brand:hover {
+            font-family: 'Pacifico', cursive;
+            font-size: 28px;
+            color: #e74c3c;
+        }
+
+        .navbar-nav .nav-link {
+            color: #fff;
+            transition: 0.5s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .footer {
+            background-color: #292929;
+            color: #fff;
+            text-align: center;
+            padding: 15px;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #fff;
+            font-weight: bold;
+            text-decoration: none;
+            margin: 5px;
+        }
+
+        .footer a:hover {
+            color: #e74c3c;
+        }
+
+    </style>
 </head>
 <body>
+<div class="bg-image-wrapper">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/index">
+                BestFood
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/shop">Shop</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cart">Cart</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profileDisplay">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
 <br>
 <div class="container">
-    <div class="col-sm-6">
+    <div class="col-sm-6 mx-auto">
         <h3 style="margin-top: 10px">User Profile</h3>
         <br>
         <form action="updateuser" method="post">
             <div class="form-group">
-                <label for="firstName">Username</label>
-                <input type="hidden" name="userid" value="${userid }">
-                <input type="text" name="username" id="firstName" required placeholder="Your Username*" value="${username }" required class="form-control form-control-lg">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control form-control-lg" required minlength="6" placeholder="Email*"
+                       value="${email}" required name="email" id="email"
+                       aria-describedby="emailHelp">
             </div>
             <div class="form-group">
-                <label for="email">Email address</label>
-                <input type="email" class="form-control form-control-lg" required minlength="6" placeholder="Email*" value="${email }" required name="email" id="email"
-                       aria-describedby="emailHelp">
-                <small id="emailHelp" class="form-text text-muted">We'll never share your email with
-                    anyone else.</small>
+                <label for="firstName">Username</label>
+                <input type="hidden" name="userid" value="${userid}">
+                <input type="text" name="username" id="firstName" required placeholder="Your Username*"
+                       value="${username}" required class="form-control form-control-lg">
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" class="form-control form-control-lg" required placeholder="Password*" value="${password }" required name="password"
-                       id="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*?[~`!@#$%\^&*()\-_=+[\]{};:\x27.,\x22\\|/?><]).{8,}" 
-                       title="Must contain: at least one number, one uppercase letter, one lowercase letter, 
+                       id="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*?[~`!@#$%\^&*()\-_=+[\]{};:\x27.,\x22\\|/?><]).{8,}"
+                       title="Must contain: at least one number, one uppercase letter, one lowercase letter,
                        one special character, and 8 or more characters" required>
-                       <input type="checkbox" onclick="showPassword()">Show Password
+                <input type="checkbox" onclick="showPassword()"> Show password
             </div>
             <div class="form-group">
                 <label for="Address">Address</label>
-                <textarea class="form-control form-control-lg" rows="3" placeholder="Enter Your Address" name="address">${address }</textarea>
+                <textarea class="form-control form-control-lg" rows="3" placeholder="Enter Your Address"
+                          name="address">${address}</textarea>
             </div>
 
             <input type="submit" value="Update Profile" class="btn btn-primary btn-block"><br>
-            
+
         </form>
     </div>
 </div>
+<br> <br>
+<footer class="footer">
+    <p>&copy; 2023 BestFood</p>
+    <div>
+        <a href="/contact">Contact Us</a>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"</script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 
 <script>
     function showPassword() {
-  var x = document.getElementById("password");
-  if (x.type === "password") {
-    x.type = "text";
-  } else {
-    x.type = "password";
-  }
-}
+        var x = document.getElementById("password");
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        }
+    }
 </script>
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
 </body>
 </html>

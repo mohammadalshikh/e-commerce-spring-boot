@@ -158,3 +158,5 @@ ALTER TABLE products ADD suggestedItem INT DEFAULT 0;
 ALTER TABLE products ADD FOREIGN KEY (suggestedItem) REFERENCES products(id);
 
 ALTER TABLE products modify price float DEFAULT 0;
+
+ALTER TABLE users ADD cumulativeTotal FLOAT DEFAULT 0;
