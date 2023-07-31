@@ -132,24 +132,27 @@ VALUES
     (1, 2, 3),
     (1, 5, 2);
 
-create table ProductMatrix(
-product int,
-p1 int default 0,
-p2 int default 0,
-p3 int default 0,
-foreign key (product) references products(id)
+
+CREATE TABLE ProductMatrix (
+                               product int,
+                               p1 INT DEFAULT 0,
+                               p2 INT DEFAULT 0,
+                               p3 INT DEFAULT 0,
+                               FOREIGN KEY (product) REFERENCES products(id)
 );
 
+INSERT INTO ProductMatrix (product) VALUES (1),(2),(3);
 
-insert into ProductMatrix (product) values (1),(2),(3);
-insert into categories values (0, 'coupons');
-update categories set categoryid = 0 where name = 'coupons';
 
-insert into products values (0, 'coupon', 'https://www.stencil1.com/wp-content/uploads/2010/11/5off.jpg', 0, 1, 0, 0, 'Coupon for users', 0);
-update products set id = 0 where name = 'coupon';
 
-alter table products add productPair int default 0;
-alter table products add foreign key (productPair) references products(id);
+INSERT INTO categories (`categoryid`, `name`) VALUES (0, 'Coupons');
 
-alter table products add suggestedItem int default 0;
-alter table products add foreign key (suggestedItem) references products(id);
+INSERT INTO products (`id`, `name`, `image`, `categoryid`, `quantity`, `price`, `weight`, `description`) VALUES (0, 'Coupon', '', 0, 1, 0, 0, 'Save $5');
+
+
+
+ALTER TABLE products ADD productPair INT DEFAULT 0;
+ALTER TABLE products ADD FOREIGN KEY (productPair) REFERENCES products(id);
+
+ALTER TABLE products ADD suggestedItem INT DEFAULT 0;
+ALTER TABLE products ADD FOREIGN KEY (suggestedItem) REFERENCES products(id);
