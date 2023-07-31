@@ -125,7 +125,6 @@ public class AdminController {
 	@RequestMapping(value = "admin/sendcategory", method = RequestMethod.GET)
 	public String addcategorytodb(@RequestParam("categoryname") String catname) {
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 			Statement stmt = con.createStatement();
 
@@ -226,7 +225,6 @@ public class AdminController {
 	@RequestMapping(value = "admin/products/updateData", method = RequestMethod.POST)
 	public String updateproducttodb(@RequestParam("id") int id, @RequestParam("name") String name, @RequestParam("price") int price, @RequestParam("weight") int weight, @RequestParam("quantity") int quantity, @RequestParam("description") String description, @RequestParam("productImage") String picture) {
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 
 			PreparedStatement pst = con.prepareStatement("update products set name= ?,image = ?,quantity = ?, price = ?, weight = ?,description = ? where id = ?;");
@@ -464,17 +462,20 @@ public class AdminController {
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 			Statement stmt = con.createStatement();
-			ResultSet cartResult = stmt.executeQuery("SELECT p.name, c.quantity, p.price FROM Cart c " +
+			ResultSet cartResult = stmt.executeQuery("SELECT p.name, c.quantity, p.price, c.productID FROM Cart c " +
 					"JOIN products p ON c.productID = p.id " +
 					"WHERE c.userID = " + getUserID());
 
+			double subTotal = 0;
 
 			while (cartResult.next()) {
 				int quantity = cartResult.getInt("quantity");
 				String productName = cartResult.getString("name");
 				double productPrice = cartResult.getDouble("price");
+				int productID = cartResult.getInt("productID");
+				double totalPrice = productPrice * quantity;
 
-				cartItems.add(new CartItem(productName, quantity, productPrice));
+				cartItems.add(new CartItem(productName, quantity, totalPrice, productID));
 			}
 		}
 		catch (Exception e) {

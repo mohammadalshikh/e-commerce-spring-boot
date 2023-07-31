@@ -185,13 +185,12 @@ public class UserController{
 	public String clearcart() {
 		try
 		{
-			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
 			Statement stmt = con.createStatement();
-			ResultSet rst = stmt.executeQuery("delete from Cart where userID = (select user_id from users where username = '" + usernameforclass + "');");
+			ResultSet rst = stmt.executeQuery("SELECT * from Cart where userID = (select user_id from users where username = '" + usernameforclass + "');");
 
 			if (rst.next()) {
-				int userID = rst.getInt("user_id");
+				int userID = rst.getInt("userID");
 				stmt.executeUpdate("DELETE FROM Cart WHERE userID = " + userID + ";");
 			}
 
@@ -200,76 +199,66 @@ public class UserController{
 		{
 			System.out.println("Exception:"+e);
 		}
-		return "cart";
+		return "redirect:/cart";
 	}
-
-
 
 	@GetMapping("movecustomtocart")
 	public String moveCustomToCart(Model model) {
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 			Statement stmt = con.createStatement();
 
-			// Fetch existing items and quantities from Cart
-			Map<String, Integer> cartItems = new HashMap<>();
+			Map<String, Integer> cartIts = new HashMap<>();
 			ResultSet cartRs = stmt.executeQuery("SELECT productID, quantity FROM Cart WHERE userID = (SELECT user_id FROM users WHERE username = '" + usernameforclass + "');");
 			while (cartRs.next()) {
 				String productID = cartRs.getString("productID");
 				int quantity = cartRs.getInt("quantity");
-				cartItems.put(productID, quantity);
+				cartIts.put(productID, quantity);
 			}
 
 
-			ResultSet customCartRs = stmt.executeQuery("SELECT productID, quantity FROM CustomCart WHERE username = '" + usernameforclass + "';");
+			ResultSet customCartRs = stmt.executeQuery("SELECT productID, quantity FROM CustomCart WHERE userID = (SELECT user_id FROM users WHERE username = '" + usernameforclass + "');");
 			while (customCartRs.next()) {
 				String productID = customCartRs.getString("productID");
 				int quantity = customCartRs.getInt("quantity");
-
-				// Check if the product is already in the cart
-				if (cartItems.containsKey(productID)) {
-					int currentQuantity = cartItems.get(productID);
+				if (cartIts.containsKey(productID)) {
+					int currentQuantity = cartIts.get(productID);
 					int newQuantity = currentQuantity + quantity;
-					// Update the quantity in the Cart table
-					stmt.executeUpdate("update Cart set quantity = " + newQuantity + " where userID = (select user_id from users where username = '" + usernameforclass + "') and productID = '" + productID + "';");
+					Statement stmt2 = con.createStatement();
+					stmt2.executeUpdate("update Cart set quantity = " + newQuantity + " where userID = (select user_id from users where username = '" + usernameforclass + "') and productID = '" + productID + "';");
 				} else {
-					stmt.executeUpdate("insert into Cart (userID, productID, quantity) values ((select user_id FROM users where username = '" + usernameforclass + "'), '" + productID + "', " + quantity + ");");
+					Statement stmt3 = con.createStatement();
+					stmt3.executeUpdate("insert into Cart (userID, productID, quantity) values ((select user_id FROM users where username = '" + usernameforclass + "'), '" + productID + "', " + quantity + ");");
 				}
 			}
 
 		} catch (Exception e) {
 			System.out.println("Exception:" + e);
 		}
-		return "cart";
+		return "redirect:/cart";
 	}
 
 	@GetMapping("deleteitem")
 	public String deleteItemFromCart(@RequestParam("productID") int productID) {
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 			Statement stmt = con.createStatement();
 
 			ResultSet userResultSet = stmt.executeQuery("select user_id from users where username = '" + usernameforclass + "';");
 			if (userResultSet.next()) {
 				int userID = userResultSet.getInt("user_id");
-				stmt.executeUpdate("delete from Cart where userID = " + userID + " and itemID = " + productID + ";");
+				stmt.executeUpdate("delete from Cart where userID = " + userID + " and productID = " + productID + ";");
 			}
 
-			userResultSet.close();
-			stmt.close();
-			con.close();
 		} catch (Exception e) {
 			System.out.println("Exception:" + e);
 		}
-		return "cart";
+		return "redirect:/cart";
 	}
 
 	@GetMapping("addtocart")
 	public String addItemToCart(@RequestParam("productID") int productID, @RequestParam("quantity") int quantity) {
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 			Statement stmt = con.createStatement();
 			ResultSet userResultSet = stmt.executeQuery("select user_id from users where username = '" + usernameforclass + "';");
@@ -284,9 +273,6 @@ public class UserController{
 					stmt.executeUpdate("insert into Cart (userID, productID, quantity) values (" + userID + ", " + productID + ", " + quantity + ");");
 				}
 			}
-			userResultSet.close();
-			stmt.close();
-			con.close();
 		} catch (Exception e) {
 			System.out.println("Exception:" + e);
 		}
