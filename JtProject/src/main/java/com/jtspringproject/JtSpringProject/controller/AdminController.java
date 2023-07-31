@@ -401,14 +401,69 @@ public class AdminController {
 				}
 			}
 		}
-		catch(Exception e)
-		{
+		catch(Exception e) {
 			System.out.println("Exception:"+e);
 		}
 	}
 
+    public static float getProductPrice(int productID, int quantity) {
 
-	@GetMapping("/admin/customers")
+		// Create a variable to hold the running total
+		float productPrice = 0;
+		try {
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
+            Statement stmt = con.createStatement();
+
+			// Obtain all details of this product
+            ResultSet productDetails = stmt.executeQuery("SELECT * FROM products WHERE productID = " + productID + ";");
+
+			// Set price
+            productPrice = productDetails.getInt("price");
+
+			// Multiply by quantity
+            productPrice *= quantity;
+
+			// Multiply by 1 - discount (discount will be 0 in the case that there is no discount)
+            double discountFromPrice = 1-productDetails.getDouble("discount");
+            productPrice *= discountFromPrice;
+			return productPrice;
+        }
+        catch(Exception e) {
+            System.out.println("Exception:" + e);
+        }
+		return productPrice;
+    }
+
+    public static float getCartPrice(String username) {
+
+		// Create a variable to hold the running total
+		float runningTotal = 0;
+		try {
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
+            Statement stmt = con.createStatement();
+
+            // Select items from Cart
+            ResultSet cartItemsRst = stmt.executeQuery("SELECT productID, quantity FROM Cart WHERE userId = (SELECT user_id FROM users WHERE username = '" + username + "');");
+
+			// Iterate through the cart, calling getProductPrice for each item
+            while(cartItemsRst.next()) {
+                int productID= cartItemsRst.getInt("productID");
+                int quantity = cartItemsRst.getInt("quantity");
+                runningTotal += getProductPrice(productID,quantity);
+            }
+
+			if(runningTotal<0){
+				return 0;
+			}
+            return runningTotal;
+        }
+        catch(Exception e) {
+            System.out.println("Exception:" + e);
+        }
+		return runningTotal;
+    }
+
+    @GetMapping("/admin/customers")
 	public String getCustomerDetail() {
 		return "displayCustomers";
 	}
