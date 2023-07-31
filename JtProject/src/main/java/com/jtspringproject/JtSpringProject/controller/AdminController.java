@@ -242,7 +242,7 @@ public class AdminController {
 		return "redirect:/admin/products";
 	}
 
-	public static void updateProductStock(String username) {
+	public static void updateProductStockFromCart(String username) {
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","dominopassword");
 			Statement stmt = con.createStatement();
@@ -267,7 +267,7 @@ public class AdminController {
 		}
 	}
 
-	public static void updateUserCoupons(String username) {
+	public static void updateUserCouponsFromCart(String username) {
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","dominopassword");
 			Statement stmt = con.createStatement();
@@ -283,6 +283,50 @@ public class AdminController {
 				updateProductPst.setInt(2, cartItemsRst.getInt("userID"));
 				updateProductPst.executeQuery();
 			}
+		}
+		catch(Exception e) {
+			System.out.println("Exception:" + e);
+		}
+	}
+
+	public static void updateUserTotalAndCoupons(String username) {
+		// Set up prerequisite variables
+		float currentTransaction = 0f;
+		float cumulativeTotal = 0f;
+
+		try {
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","dominopassword");
+			Statement stmt = con.createStatement();
+
+			// Get total spent from current transaction
+			currentTransaction = AdminController.getCartPrice(username);
+
+			// Check user's cumulativeTotal
+			ResultSet cumulativeTotalRst = stmt.executeQuery("SELECT cumulativeTotal FROM users WHERE username = '" + username + "';");
+			if(cumulativeTotalRst.next()) {
+				cumulativeTotal = cumulativeTotalRst.getFloat("cumulativeTotal");
+			}
+			cumulativeTotal += currentTransaction;
+
+			// Verify that cumulativeTotal surpassed $100
+			if((int)cumulativeTotal / 100 != 0) {
+				// Set up prerequisite variables
+				int newCoupons = 0;
+
+				// Find number of coupons redeemed and new cumulativeTotal
+				newCoupons = (int)cumulativeTotal / 100;
+				cumulativeTotal = cumulativeTotal % 100;
+
+				// Update user's coupons
+				PreparedStatement userCouponsPst = con.prepareStatement("UPDATE users SET coupons = (coupons + ?) WHERE username = '" + username + "';");
+				userCouponsPst.setInt(1, newCoupons);
+				userCouponsPst.executeUpdate();
+			}
+
+			// Update user's cumulativeTotal
+			PreparedStatement cumulativeTotalPst = con.prepareStatement("UPDATE users SET cumulativeTotal = ? WHERE username = '" + username + "';");
+			cumulativeTotalPst.setFloat(1, cumulativeTotal);
+			cumulativeTotalPst.executeUpdate();
 		}
 		catch(Exception e) {
 			System.out.println("Exception:" + e);
