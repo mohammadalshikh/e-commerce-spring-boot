@@ -49,7 +49,7 @@ public class UserController{
 			Statement stmt = con.createStatement();
 
 			// Select items from Cart
-			ResultSet cartItemsRst = stmt.executeQuery("SELECT userId, productID, quantity FROM Cart WHERE userId = (SELECT user_id FROM users WHERE username = '" + usernameforclass + "');");
+			ResultSet cartItemsRst = stmt.executeQuery("SELECT userId, productID, quantity FROM Cart WHERE userID = (SELECT user_id FROM users WHERE username = '" + usernameforclass + "');");
 
 			// Get last transactionID used
 			PreparedStatement tIDPst = con.prepareStatement("SELECT MAX(transactionID) AS max FROM TransactionHistory WHERE userID = (SELECT user_id FROM users WHERE username = '" + usernameforclass + "'");
@@ -83,23 +83,41 @@ public class UserController{
 					for(int q : products) {
 						// Verify that the two items pointed at are not the same
 						if(p != q) {
-							// Update ProductMatrix
-							PreparedStatement insertMatrixPst = con.prepareStatement("UPDATE ProductMatrix SET ? = ? WHERE productID = ?");
-							ResultSet oldCountRst = stmt.executeQuery("SELECT " + q + " FROM TransactionHistory WHERE productID = " + p + ";");
-							int oldCount = oldCountRst.getInt(q);
-							insertMatrixPst.setInt(1, q);
-							insertMatrixPst.setInt(2, (oldCount + 1));
-							insertMatrixPst.setInt(3, p);
-							insertMatrixPst.executeQuery();
+							// Update ProductMatrix through the row and column
+							int oldCountRowColumn = 0;
+							String nameRowColumn = "p" + q;
+							ResultSet oldCountRowColumnRst = stmt.executeQuery("SELECT " + nameRowColumn + " FROM ProductMatrix WHERE product = " + p + ";");
+							if(oldCountRowColumnRst.next()) {
+								oldCountRowColumn = oldCountRowColumnRst.getInt(nameRowColumn);
+							}
+							PreparedStatement insertMatrixRowColumnPst = con.prepareStatement("UPDATE ProductMatrix SET ? = ? WHERE product = ?");
+							insertMatrixRowColumnPst.setString(1, nameRowColumn);
+							insertMatrixRowColumnPst.setInt(2, (oldCountRowColumn + 1));
+							insertMatrixRowColumnPst.setInt(3, p);
+							insertMatrixRowColumnPst.executeQuery();
+							// Update ProductMatrix through the column and row
+							int oldCountColumnRow = 0;
+							String nameColumnRow = "p" + p;
+							ResultSet oldCountColumnRowRst = stmt.executeQuery("SELECT " + nameColumnRow + " FROM ProductMatrix WHERE product = " + q + ";");
+							if(oldCountColumnRowRst.next()) {
+								oldCountColumnRow = oldCountColumnRowRst.getInt(nameColumnRow);
+							}
+							PreparedStatement insertMatrixColumnRowPst = con.prepareStatement("UPDATE ProductMatrix SET ? = ? WHERE product = ?");
+							insertMatrixColumnRowPst.setString(1, nameColumnRow);
+							insertMatrixColumnRowPst.setInt(2, (oldCountColumnRow + 1));
+							insertMatrixColumnRowPst.setInt(3, q);
+							insertMatrixColumnRowPst.executeQuery();
 						}
 					}
 				}
 			}
 
 			// Update product stock
-			AdminController.updateProductStock(usernameforclass);
+			AdminController.updateProductStockFromCart(usernameforclass);
 			// Update user coupons
-			AdminController.updateUserCoupons(usernameforclass);
+			AdminController.updateUserCouponsFromCart(usernameforclass);
+			// Update user total based on cart and user coupons based on total
+			AdminController.updateUserTotalAndCoupons(usernameforclass);
 			// Delete items from Cart
 			this.clearcart();
 		}
@@ -185,12 +203,13 @@ public class UserController{
 	public String clearcart() {
 		try
 		{
+			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
 			Statement stmt = con.createStatement();
-			ResultSet rst = stmt.executeQuery("SELECT * from Cart where userID = (select user_id from users where username = '" + usernameforclass + "');");
+			ResultSet rst = stmt.executeQuery("delete from Cart where userID = (select user_id from users where username = '" + usernameforclass + "');");
 
 			if (rst.next()) {
-				int userID = rst.getInt("userID");
+				int userID = rst.getInt("user_id");
 				stmt.executeUpdate("DELETE FROM Cart WHERE userID = " + userID + ";");
 			}
 
@@ -199,66 +218,76 @@ public class UserController{
 		{
 			System.out.println("Exception:"+e);
 		}
-		return "redirect:/cart";
+		return "cart";
 	}
+
+
 
 	@GetMapping("movecustomtocart")
 	public String moveCustomToCart(Model model) {
 		try {
+			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 			Statement stmt = con.createStatement();
 
-			Map<String, Integer> cartIts = new HashMap<>();
+			// Fetch existing items and quantities from Cart
+			Map<String, Integer> cartItems = new HashMap<>();
 			ResultSet cartRs = stmt.executeQuery("SELECT productID, quantity FROM Cart WHERE userID = (SELECT user_id FROM users WHERE username = '" + usernameforclass + "');");
 			while (cartRs.next()) {
 				String productID = cartRs.getString("productID");
 				int quantity = cartRs.getInt("quantity");
-				cartIts.put(productID, quantity);
+				cartItems.put(productID, quantity);
 			}
 
 
-			ResultSet customCartRs = stmt.executeQuery("SELECT productID, quantity FROM CustomCart WHERE userID = (SELECT user_id FROM users WHERE username = '" + usernameforclass + "');");
+			ResultSet customCartRs = stmt.executeQuery("SELECT productID, quantity FROM CustomCart WHERE username = '" + usernameforclass + "';");
 			while (customCartRs.next()) {
 				String productID = customCartRs.getString("productID");
 				int quantity = customCartRs.getInt("quantity");
-				if (cartIts.containsKey(productID)) {
-					int currentQuantity = cartIts.get(productID);
+
+				// Check if the product is already in the cart
+				if (cartItems.containsKey(productID)) {
+					int currentQuantity = cartItems.get(productID);
 					int newQuantity = currentQuantity + quantity;
-					Statement stmt2 = con.createStatement();
-					stmt2.executeUpdate("update Cart set quantity = " + newQuantity + " where userID = (select user_id from users where username = '" + usernameforclass + "') and productID = '" + productID + "';");
+					// Update the quantity in the Cart table
+					stmt.executeUpdate("update Cart set quantity = " + newQuantity + " where userID = (select user_id from users where username = '" + usernameforclass + "') and productID = '" + productID + "';");
 				} else {
-					Statement stmt3 = con.createStatement();
-					stmt3.executeUpdate("insert into Cart (userID, productID, quantity) values ((select user_id FROM users where username = '" + usernameforclass + "'), '" + productID + "', " + quantity + ");");
+					stmt.executeUpdate("insert into Cart (userID, productID, quantity) values ((select user_id FROM users where username = '" + usernameforclass + "'), '" + productID + "', " + quantity + ");");
 				}
 			}
 
 		} catch (Exception e) {
 			System.out.println("Exception:" + e);
 		}
-		return "redirect:/cart";
+		return "cart";
 	}
 
 	@GetMapping("deleteitem")
 	public String deleteItemFromCart(@RequestParam("productID") int productID) {
 		try {
+			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 			Statement stmt = con.createStatement();
 
 			ResultSet userResultSet = stmt.executeQuery("select user_id from users where username = '" + usernameforclass + "';");
 			if (userResultSet.next()) {
 				int userID = userResultSet.getInt("user_id");
-				stmt.executeUpdate("delete from Cart where userID = " + userID + " and productID = " + productID + ";");
+				stmt.executeUpdate("delete from Cart where userID = " + userID + " and itemID = " + productID + ";");
 			}
 
+			userResultSet.close();
+			stmt.close();
+			con.close();
 		} catch (Exception e) {
 			System.out.println("Exception:" + e);
 		}
-		return "redirect:/cart";
+		return "cart";
 	}
 
 	@GetMapping("addtocart")
 	public String addItemToCart(@RequestParam("productID") int productID, @RequestParam("quantity") int quantity) {
 		try {
+			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 			Statement stmt = con.createStatement();
 			ResultSet userResultSet = stmt.executeQuery("select user_id from users where username = '" + usernameforclass + "';");
@@ -273,6 +302,9 @@ public class UserController{
 					stmt.executeUpdate("insert into Cart (userID, productID, quantity) values (" + userID + ", " + productID + ", " + quantity + ");");
 				}
 			}
+			userResultSet.close();
+			stmt.close();
+			con.close();
 		} catch (Exception e) {
 			System.out.println("Exception:" + e);
 		}
