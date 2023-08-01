@@ -62,9 +62,10 @@ public class UserController{
 			ResultSet cartItemsRst = stmt.executeQuery("SELECT userId, productID, quantity FROM Cart WHERE userID = (SELECT user_id FROM users WHERE username = '" + usernameforclass + "');");
 
 			// Get last transactionID used
-			PreparedStatement tIDPst = con.prepareStatement("SELECT MAX(transactionID) AS max FROM TransactionHistory WHERE userID = (SELECT user_id FROM users WHERE username = '" + usernameforclass + "'");
-			tIDPst.setString(1, usernameforclass);
-			ResultSet tIDRst = tIDPst.executeQuery();
+//			PreparedStatement tIDPst = con.prepareStatement("SELECT MAX(transactionID) AS max FROM TransactionHistory WHERE userID = (SELECT user_id FROM users WHERE username = '" + usernameforclass + "');");
+//			tIDPst.setString(1, usernameforclass);
+//			ResultSet tIDRst = tIDPst.executeQuery();
+			ResultSet tIDRst = stmt.executeQuery("SELECT MAX(transactionID) AS max FROM TransactionHistory WHERE userID = (SELECT user_id FROM users WHERE username = '" + usernameforclass + "');");
 			// Verify that there was a previous transactionID
 			if(tIDRst.next()) {
 				// Update transactionID
@@ -76,7 +77,7 @@ public class UserController{
 			// Parse through cartItemsRst
 			while(cartItemsRst.next()) {
 				// Insert Cart tuples into TransactionHistory
-				PreparedStatement insertHistoryPst = con.prepareStatement("INSERT INTO TransactionHistory (userID, productID, quantity, transactionID) VALUES (?, ?, ?, '" + transactionID + "')");
+				PreparedStatement insertHistoryPst = con.prepareStatement("INSERT INTO TransactionHistory (userID, productID, quantity, transactionID) VALUES (?, ?, ?, '" + transactionID + "');");
 				insertHistoryPst.setInt(1,cartItemsRst.getInt("userId"));
 				insertHistoryPst.setInt(2,cartItemsRst.getInt("productID"));
 				insertHistoryPst.setInt(3,cartItemsRst.getInt("quantity"));
@@ -100,7 +101,7 @@ public class UserController{
 							if(oldCountRowColumnRst.next()) {
 								oldCountRowColumn = oldCountRowColumnRst.getInt(nameRowColumn);
 							}
-							PreparedStatement insertMatrixRowColumnPst = con.prepareStatement("UPDATE ProductMatrix SET ? = ? WHERE product = ?");
+							PreparedStatement insertMatrixRowColumnPst = con.prepareStatement("UPDATE ProductMatrix SET ? = ? WHERE product = ?;");
 							insertMatrixRowColumnPst.setString(1, nameRowColumn);
 							insertMatrixRowColumnPst.setInt(2, (oldCountRowColumn + 1));
 							insertMatrixRowColumnPst.setInt(3, p);
@@ -112,7 +113,7 @@ public class UserController{
 							if(oldCountColumnRowRst.next()) {
 								oldCountColumnRow = oldCountColumnRowRst.getInt(nameColumnRow);
 							}
-							PreparedStatement insertMatrixColumnRowPst = con.prepareStatement("UPDATE ProductMatrix SET ? = ? WHERE product = ?");
+							PreparedStatement insertMatrixColumnRowPst = con.prepareStatement("UPDATE ProductMatrix SET ? = ? WHERE product = ?;");
 							insertMatrixColumnRowPst.setString(1, nameColumnRow);
 							insertMatrixColumnRowPst.setInt(2, (oldCountColumnRow + 1));
 							insertMatrixColumnRowPst.setInt(3, q);
@@ -148,7 +149,7 @@ public class UserController{
 		Map<String, Boolean> response = new HashMap<>();
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
-			PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM users WHERE username = ?");
+			PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM users WHERE username = ?;");
 			pst.setString(1, username);
 			ResultSet rs = pst.executeQuery();
 			if (rs.next()) {
@@ -170,7 +171,7 @@ public class UserController{
 		Map<String, Boolean> response = new HashMap<>();
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
-			PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM users WHERE email = ?");
+			PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM users WHERE email = ?;");
 			pst.setString(1, email);
 			ResultSet rs = pst.executeQuery();
 			if (rs.next()) {
@@ -381,7 +382,7 @@ public class UserController{
 			Statement stmt = con.createStatement();
 			ResultSet cartResult = stmt.executeQuery("SELECT p.name, c.quantity, p.price, c.productID FROM Cart c " +
 					"JOIN products p ON c.productID = p.id " +
-					"WHERE c.userID = " + AdminController.getUserID());
+					"WHERE c.userID = " + AdminController.getUserID() + ";");
 
 			double subTotal = 0;
 

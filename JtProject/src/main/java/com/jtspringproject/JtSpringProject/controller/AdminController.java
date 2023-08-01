@@ -164,7 +164,7 @@ public class AdminController {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 			Statement stmt = con.createStatement();
 
-			PreparedStatement pst = con.prepareStatement("update categories set name = ? where categoryid = ?");
+			PreparedStatement pst = con.prepareStatement("update categories set name = ? where categoryid = ?;");
 			pst.setString(1, categoryname);
 			pst.setInt(2, id);
 			int i = pst.executeUpdate();
@@ -255,7 +255,7 @@ public class AdminController {
 				// Verify that the product is not a coupon product
 				if(cartItemsRst.getInt("productID") != 0) {
 					// Update product quantities
-					PreparedStatement updateProductPst = con.prepareStatement("UPDATE products SET quantity = quantity - ? WHERE productID = ?");
+					PreparedStatement updateProductPst = con.prepareStatement("UPDATE products SET quantity = quantity - ? WHERE productID = ?;");
 					updateProductPst.setInt(1, cartItemsRst.getInt("quantity"));
 					updateProductPst.setInt(2, cartItemsRst.getInt("productID"));
 					updateProductPst.executeQuery();
@@ -278,7 +278,7 @@ public class AdminController {
 			// Verify that there was a coupon used
 			if(cartItemsRst.next()) {
 				// Update user coupon quantity
-				PreparedStatement updateProductPst = con.prepareStatement("UPDATE users SET coupons = coupons - ? WHERE  userID = ?");
+				PreparedStatement updateProductPst = con.prepareStatement("UPDATE users SET coupons = coupons - ? WHERE  userID = ?;");
 				updateProductPst.setInt(1, cartItemsRst.getInt("quantity"));
 				updateProductPst.setInt(2, cartItemsRst.getInt("userID"));
 				updateProductPst.executeQuery();
@@ -435,9 +435,10 @@ public class AdminController {
 
 
 				// Get id of newly added product
-				PreparedStatement getItemIDPst = con.prepareStatement("SELECT id FROM products WHERE name = /'?';");
-				getItemIDPst.setString(1, name);
-				ResultSet getItemIDRst = getItemIDPst.executeQuery();
+//				PreparedStatement getItemIDPst = con.prepareStatement("SELECT id FROM products WHERE name = /'?';");
+//				getItemIDPst.setString(1, name);
+//				ResultSet getItemIDRst = getItemIDPst.executeQuery();
+				ResultSet getItemIDRst = stmt.executeQuery("SELECT id FROM products WHERE name = '" + name + "';");
 				int itemID = getItemIDRst.getInt("id");
 
 				// Add newly added product as tuple in ProductMatrix
@@ -581,7 +582,7 @@ public class AdminController {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
-			PreparedStatement pst = con.prepareStatement("update users set username= ?,email = ?,password= ?, address= ? where user_id = '" + userid + "'");
+			PreparedStatement pst = con.prepareStatement("update users set username= ?,email = ?,password= ?, address= ? where user_id = '" + userid + "';");
 			pst.setString(1, username);
 			pst.setString(2, email);
 			pst.setString(3, password);
