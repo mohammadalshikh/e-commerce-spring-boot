@@ -333,6 +333,50 @@ public class AdminController {
 		}
 	}
 
+	public static int getCouponsForUser(String username) {
+		// Set up prerequisite variables
+		int userCoupons = 0;
+
+		try {
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","dominopassword");
+			Statement stmt = con.createStatement();
+
+			// Query for user coupons
+			ResultSet userCouponsRst = stmt.executeQuery("SELECT coupons FROM users WHERE username = '" + username + "';");
+			if(userCouponsRst.next()) {
+				userCoupons = userCouponsRst.getInt("coupons");
+			}
+		}
+		catch(Exception e) {
+			System.out.println("Exception:" + e);
+		}
+
+		// Return result
+		return userCoupons;
+	}
+
+	public static int getCouponsApplied(String username) {
+		// Set up prerequisite variables
+		int couponsApplied = 0;
+
+		try {
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","dominopassword");
+			Statement stmt = con.createStatement();
+
+			// Query for user coupons
+			ResultSet couponsAppliedRst = stmt.executeQuery("SELECT quantity FROM Cart WHERE productID = 0 AND userID = (SELECT user_id FROM users WHERE username = '" + username + "');");
+			if(couponsAppliedRst.next()) {
+				couponsApplied = couponsAppliedRst.getInt("quantity");
+			}
+		}
+		catch(Exception e) {
+			System.out.println("Exception:" + e);
+		}
+
+		// Return result
+		return couponsApplied;
+	}
+
 	@GetMapping("/admin/products/delete")
 	public String removeProductDb(@RequestParam("id") int id) {
 		try {
@@ -363,7 +407,7 @@ public class AdminController {
 		return "redirect:/admin/products";
 	}
 
-		@PostMapping("/admin/products")
+	@PostMapping("/admin/products")
 	public String postproduct() {
 		return "redirect:/admin/categories";
 	}
@@ -447,6 +491,24 @@ public class AdminController {
 			System.out.println("Exception:"+e);
 		}
 	}
+
+	// TODO: waiting for front end -dom
+//	@GetMapping("/suggestItem")
+//	public static void updateSuggestedItem(@RequestParam("productID") int productID, @RequestParam("suggestedID") int suggestedID) {
+//		try {
+//			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
+//			Statement stmt = con.createStatement();
+//
+//			// Update suggestedItem of current product
+//			PreparedStatement suggestItemPst = con.prepareStatement("UPDATE products SET suggestedItem = ? WHERE id = ?;");
+//			suggestItemPst.setInt(1, suggestedID);
+//			suggestItemPst.setInt(2, productID);
+//			suggestItemPst.executeUpdate();
+//		}
+//		catch(Exception e) {
+//			System.out.println("Exception:"+e);
+//		}
+//	}
 
     public static float getProductPrice(int productID, int quantity) {
 

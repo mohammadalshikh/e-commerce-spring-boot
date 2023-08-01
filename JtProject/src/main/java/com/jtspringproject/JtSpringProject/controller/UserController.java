@@ -42,11 +42,12 @@ public class UserController{
 
 //		model.addAttribute("total", AdminController.getCartPrice(usernameforclass));
 //		model.addAttribute("orderTotal", AdminController.getOrderTotal(usernameforclass));
-//		model.addAttribute("couponsForUser", AdminController.getCouponsForUser(usernameforclass));
-//		model.addAttribute("couponsApplied", AdminController.getCouponsApplied(usernameforclass));
+		model.addAttribute("couponsForUser", AdminController.getCouponsForUser(usernameforclass));
+		model.addAttribute("couponsApplied", AdminController.getCouponsApplied(usernameforclass));
 
 		return "/buy";
 	}
+
 	@GetMapping("/buyCart")
 	public String buyCart()	{
 		// Set up prerequisite variables
