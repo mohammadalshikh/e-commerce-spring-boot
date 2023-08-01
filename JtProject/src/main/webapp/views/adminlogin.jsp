@@ -28,10 +28,10 @@
                     <input type="password" class="form-control form-control-lg border border-danger	" placeholder="Password" required name="password" id="password">
                 </div><br>
 
-                <input type="submit" value="Login" class="btn btn-primary btn-block">
-                <br><h3 style="color:red;">${message }</h3>
+                <input type="submit" value="Log in" class="btn btn-primary btn-block">
+                <br><h3 style="color:red;">${message}</h3>
                 <br>
-                <span>User login page <a class="linkControl" href="/">from here</a></span>
+                <span>User login page from <a class="linkControl" href="/">here</a></span>
         </div>
 
 </div>

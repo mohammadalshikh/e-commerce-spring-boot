@@ -181,7 +181,7 @@
             <button type="submit" class="btn btn-login">Log in</button><br><br>
             <span>Don't have an account? <a class="linkControl" href="#" data-toggle="modal" data-target="#registrationModal">Register here</a></span>
             <br>
-            <span>Admin login page <a class="linkControl" href="/admin">from here</a></span>
+            <span>Admin login page from <a class="linkControl" href="/admin">here</a></span>
         </form>
     </div>
 

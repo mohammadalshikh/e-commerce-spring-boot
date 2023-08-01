@@ -2,6 +2,8 @@ package com.jtspringproject.JtSpringProject.controller;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.jtspringproject.JtSpringProject.CartItem;
 import org.springframework.stereotype.Controller;
@@ -244,7 +246,7 @@ public class AdminController {
 
 	public static void updateProductStockFromCart(String username) {
 		try {
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","dominopassword");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
 			Statement stmt = con.createStatement();
 
 			// Select items from Cart
@@ -269,7 +271,7 @@ public class AdminController {
 
 	public static void updateUserCouponsFromCart(String username) {
 		try {
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","dominopassword");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
 			Statement stmt = con.createStatement();
 
 			// Select coupons from Cart
@@ -295,7 +297,7 @@ public class AdminController {
 		float cumulativeTotal = 0f;
 
 		try {
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","dominopassword");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
 			Statement stmt = con.createStatement();
 
 			// Get total spent from current transaction
@@ -338,7 +340,7 @@ public class AdminController {
 		int userCoupons = 0;
 
 		try {
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","dominopassword");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
 			Statement stmt = con.createStatement();
 
 			// Query for user coupons
@@ -355,12 +357,33 @@ public class AdminController {
 		return userCoupons;
 	}
 
+	@RequestMapping(value = "/applyCoupon", method = RequestMethod.POST)
+	public String applyCoupon(@RequestParam("apply") int coupons) {
+		try {
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
+			Statement stmt = con.createStatement();
+			if(getCouponsApplied(usernameforclass) != 0) {
+				PreparedStatement pst = con.prepareStatement("UPDATE Cart SET quantity = ? WHERE productID = 0 AND userID = ?;");
+				pst.setInt(1, coupons);
+				pst.setInt(2, getUserID());
+				pst.executeUpdate();
+			}
+			else {
+				UserController.addItemToCart(0, coupons);
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
+		return "redirect:/buy";
+	}
+
 	public static int getCouponsApplied(String username) {
 		// Set up prerequisite variables
 		int couponsApplied = 0;
 
 		try {
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","dominopassword");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
 			Statement stmt = con.createStatement();
 
 			// Query for user coupons
@@ -589,7 +612,7 @@ public class AdminController {
 			for (int i = 0; i < noOfCoupons; i++) {
 				orderTotal -= 5;
 				if (orderTotal <= 0) {
-					stmt.executeQuery("UPDATE Cart SET quantity = " + i + " WHERE productID = 0 AND userId = (SELECT user_id FROM users WHERE username = '" + username + "');");
+					stmt.executeUpdate("UPDATE Cart SET quantity = " + i + " WHERE productID = 0 AND userId = (SELECT user_id FROM users WHERE username = '" + username + "');");
 					orderTotal = 0;
 				}
 			}

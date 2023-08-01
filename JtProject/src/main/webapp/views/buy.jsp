@@ -137,19 +137,19 @@
     <div class="left-content">
         <H1 style="white-space: nowrap">Order Summary</H1>
         <br>
-        <H4>Items: $</H4>
+        <H4>Items: $${total}</H4>
         <br>
         <H4 style="white-space: nowrap">Shipping & Handling: FREE</H4>
         <br>
-        <H4>Total before tax: $</H4>
+        <H4>Total before tax: $${total}</H4>
         <br>
         <H4>-------------------</H4>
         <br> <br>
-        <H4>Order Total: $</H4>
+        <H4>Order Total: $${orderTotal}</H4>
         <br>
         <form action="/applyCoupon" method="post">
             <label>Apply coupons</label>
-            <input type="number" class="form-control" id="applyCoupon">
+            <input type="number" class="form-control" name="apply" placeholder="${couponsApplied}" max="${couponsForUser}" min="0">
             <br>
             <button type="submit" class="btn btn-primary">Apply</button>
         </form>
@@ -158,43 +158,43 @@
         <form id="payment-form" action="/buyCart" method="post">
             <div class="form-group">
                 <label for="first-name">First Name</label>
-                <input type="text" class="form-control" id="first-name" required>
+                <input type="text" class="form-control" id="first-name" value="Khaled" required>
             </div>
             <div class="form-group">
                 <label for="last-name">Last Name</label>
-                <input type="text" class="form-control" id="last-name" required>
+                <input type="text" class="form-control" id="last-name" value="Jobabo" required>
             </div>
             <div class="form-group">
                 <label for="card-number">Card Number</label>
-                <input type="text" class="form-control" id="card-number" required>
+                <input type="text" class="form-control" id="card-number" value="5258976001726101" required>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="expiry-month">Card Expiry Date (MM/YY)</label>
-                    <input type="text" class="form-control" id="expiry-month" required>
+                    <input type="text" class="form-control" id="expiry-month" value="06/25" required>
                 </div>
                 <div class="form-group">
                     <label for="cvv">CVV</label>
-                    <input type="password" class="form-control" id="cvv" required maxlength="3">
+                    <input type="password" class="form-control" id="cvv" value="338" required maxlength="3">
                 </div>
             </div>
             <div class="form-group">
                 <label for="street-address">Street Address</label>
-                <input type="text" class="form-control" id="street-address" required>
+                <input type="text" class="form-control" id="street-address" value="40 Guy St" required>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="city">City</label>
-                    <input type="text" class="form-control" id="city" required>
+                    <input type="text" class="form-control" id="city" value="Montreal" required>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="postal-code">Postal Code</label>
-                    <input type="text" class="form-control" id="postal-code" required maxlength="6">
+                    <input type="text" class="form-control" id="postal-code" value="H4N1G2" required maxlength="6">
                 </div>
             </div>
             <div class="form-group">
                 <label for="email">Email Address</label>
-                <input type="email" class="form-control" id="email" required>
+                <input type="email" class="form-control" id="email" value="jobaboking@gmail.com" required>
             </div>
             <button type="submit" class="btn btn-primary">Submit Payment</button>
         </form>
@@ -211,96 +211,96 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 <script>
-    // Validate the postal code based on the specified criteria
-    function validatePostalCode(postalCode) {
-        const postalCodeRegex = /^[A-Za-z]\d[A-Za-z]\d[A-Za-z]\d$/;
-        return postalCodeRegex.test(postalCode);
-    }
-
-    $(document).ready(function () {
-        function formatPostalCode(postalCode) {
-            return postalCode.toUpperCase().replace(/\s/g, '');
-        }
-
-        function getCursorPosition(input) {
-            if ('selectionStart' in input) {
-                return input.selectionStart;
-            } else if (document.selection) {
-                input.focus();
-                var sel = document.selection.createRange();
-                var selLen = document.selection.createRange().text.length;
-                sel.moveStart('character', -input.value.length);
-                return sel.text.length - selLen;
-            }
-            return 0;
-        }
-
-        function showPostalCodeValidationMessage(isValid) {
-            const postalCodeInput = $("#postal-code");
-            const validationMessage = $("#postal-code-validation");
-
-            if (isValid) {
-                postalCodeInput.removeClass("is-invalid");
-                validationMessage.hide();
-            } else {
-                postalCodeInput.addClass("is-invalid");
-                validationMessage.show();
-            }
-        }
-
-        $("#postal-code").on('input', function (event) {
-            const postalCodeInput = $(this);
-            const formattedValue = formatPostalCode(postalCodeInput.val());
-            const cursorPosition = getCursorPosition(this);
-
-            postalCodeInput.val(formattedValue);
-
-            // Adjust cursor position to allow smooth editing
-            const newPosition = cursorPosition + (formattedValue.length - postalCodeInput.val().length);
-            postalCodeInput[0].setSelectionRange(newPosition, newPosition);
-
-            // Validate postal code
-            const isValidPostalCode = validatePostalCode(formattedValue);
-            showPostalCodeValidationMessage(isValidPostalCode);
-        });
-
-        $("#payment-form").submit(function (event) {
-            event.preventDefault();
-            const firstName = $("#first-name").val();
-            const lastName = $("#last-name").val();
-            const cardNumber = $("#card-number").val();
-            const expiryMonth = $("#expiry-month").val();
-            const cvv = $("#cvv").val();
-            const streetAddress = $("#street-address").val();
-            const city = $("#city").val();
-            const postalCode = $("#postal-code").val().replace(/\s/g, ''); // Remove spaces
-            const email = $("#email").val();
-
-            // Validate postal code
-            const isValidPostalCode = validatePostalCode(postalCode);
-            showPostalCodeValidationMessage(isValidPostalCode);
-
-            if (!isValidPostalCode) {
-                return;
-            }
-
-            // You can add further validation for other fields if required
-
-            // Now you can proceed with form submission or payment processing
-            // For demonstration purposes, we'll just log the form data
-            const formData = {
-                firstName,
-                lastName,
-                cardNumber,
-                expiryMonth,
-                cvv,
-                streetAddress,
-                city,
-                postalCode,
-                email
-            };
-        });
-    });
+    // // Validate the postal code based on the specified criteria
+    // function validatePostalCode(postalCode) {
+    //     const postalCodeRegex = /^[A-Za-z]\d[A-Za-z]\d[A-Za-z]\d$/;
+    //     return postalCodeRegex.test(postalCode);
+    // }
+    //
+    // $(document).ready(function () {
+    //     function formatPostalCode(postalCode) {
+    //         return postalCode.toUpperCase().replace(/\s/g, '');
+    //     }
+    //
+    //     function getCursorPosition(input) {
+    //         if ('selectionStart' in input) {
+    //             return input.selectionStart;
+    //         } else if (document.selection) {
+    //             input.focus();
+    //             var sel = document.selection.createRange();
+    //             var selLen = document.selection.createRange().text.length;
+    //             sel.moveStart('character', -input.value.length);
+    //             return sel.text.length - selLen;
+    //         }
+    //         return 0;
+    //     }
+    //
+    //     function showPostalCodeValidationMessage(isValid) {
+    //         const postalCodeInput = $("#postal-code");
+    //         const validationMessage = $("#postal-code-validation");
+    //
+    //         if (isValid) {
+    //             postalCodeInput.removeClass("is-invalid");
+    //             validationMessage.hide();
+    //         } else {
+    //             postalCodeInput.addClass("is-invalid");
+    //             validationMessage.show();
+    //         }
+    //     }
+    //
+    //     $("#postal-code").on('input', function (event) {
+    //         const postalCodeInput = $(this);
+    //         const formattedValue = formatPostalCode(postalCodeInput.val());
+    //         const cursorPosition = getCursorPosition(this);
+    //
+    //         postalCodeInput.val(formattedValue);
+    //
+    //         // Adjust cursor position to allow smooth editing
+    //         const newPosition = cursorPosition + (formattedValue.length - postalCodeInput.val().length);
+    //         postalCodeInput[0].setSelectionRange(newPosition, newPosition);
+    //
+    //         // Validate postal code
+    //         const isValidPostalCode = validatePostalCode(formattedValue);
+    //         showPostalCodeValidationMessage(isValidPostalCode);
+    //     });
+    //
+    //     $("#payment-form").submit(function (event) {
+    //         event.preventDefault();
+    //         const firstName = $("#first-name").val();
+    //         const lastName = $("#last-name").val();
+    //         const cardNumber = $("#card-number").val();
+    //         const expiryMonth = $("#expiry-month").val();
+    //         const cvv = $("#cvv").val();
+    //         const streetAddress = $("#street-address").val();
+    //         const city = $("#city").val();
+    //         const postalCode = $("#postal-code").val().replace(/\s/g, ''); // Remove spaces
+    //         const email = $("#email").val();
+    //
+    //         // Validate postal code
+    //         const isValidPostalCode = validatePostalCode(postalCode);
+    //         showPostalCodeValidationMessage(isValidPostalCode);
+    //
+    //         if (!isValidPostalCode) {
+    //             return;
+    //         }
+    //
+    //         // You can add further validation for other fields if required
+    //
+    //         // Now you can proceed with form submission or payment processing
+    //         // For demonstration purposes, we'll just log the form data
+    //         const formData = {
+    //             firstName,
+    //             lastName,
+    //             cardNumber,
+    //             expiryMonth,
+    //             cvv,
+    //             streetAddress,
+    //             city,
+    //             postalCode,
+    //             email
+    //         };
+    //     });
+    // });
 </script>
 </body>
 </html>

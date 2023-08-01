@@ -129,15 +129,15 @@ INSERT INTO `CustomCart` (`userID`, `productID`, `quantity`)
 VALUES
     (1, 1, 2),
     (1, 3, 1),
-    (1, 2, 3),
+    (1, 2, 3);
 
 
 CREATE TABLE ProductMatrix (
-                               product int,
-                               p1 INT DEFAULT 0,
-                               p2 INT DEFAULT 0,
-                               p3 INT DEFAULT 0,
-                               FOREIGN KEY (product) REFERENCES products(id)
+     product int,
+     p1 INT DEFAULT 0,
+     p2 INT DEFAULT 0,
+     p3 INT DEFAULT 0,
+     FOREIGN KEY (product) REFERENCES products(id)
 );
 
 INSERT INTO ProductMatrix (product) VALUES (1),(2),(3);
@@ -159,3 +159,10 @@ ALTER TABLE products ADD FOREIGN KEY (suggestedItem) REFERENCES products(id);
 ALTER TABLE products modify price float DEFAULT 0;
 
 ALTER TABLE users ADD cumulativeTotal FLOAT DEFAULT 0;
+
+alter table users drop column coupons;
+alter table users add coupons int default 0;
+
+update users
+set coupons = 10
+where user_id = 1;
