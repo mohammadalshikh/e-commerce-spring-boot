@@ -101,7 +101,7 @@
             text-align: center;
         }
 
-        #buyButton {
+        #checkOut {
             display: block;
             width: 200px; /* Set the width of the button */
             margin: 0 auto; /* Center the button horizontally */
@@ -109,7 +109,7 @@
             font-size: 18px; /* Set the font size of the button text */
         }
 
-        #buyButton:hover {
+        #checkOut:hover {
             color: #fff;
         }
 
@@ -162,7 +162,7 @@
                         <a class="nav-link" href="/profileDisplay">Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/logout">Logout</a>
+                        <a class="nav-link" href="/">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -207,7 +207,7 @@
                 <!-- Add the "Delete" button for each product -->
                 <form action="/deleteitem" method="get">
                     <input type="hidden" name="productID" value="<%= item.getProductID() %>">
-                    <button type="submit" class="btn btn-delete">Delete</button>
+                    <button type="submit" class="btn btn-delete">Remove</button>
                 </form>
             </td>
         </tr>
@@ -219,11 +219,10 @@
     <br>
     <p class="empty-cart-message" id="emptyCartMessage">Your cart is currently empty, add some products to your cart.</p>
     <p id="total">Total: $${total}</p>
-    <form action="/buy" method="get">
-        <button id="buyButton" type="submit" class="btn btn-delete">Buy</button>
-    </form>
+        <a id="checkOut" href="/buy" class="btn btn-delete">Check out</a>
 </div>
 
+<br><br>
 
 <footer class="footer">
     <p>&copy; 2023 BestFood</p>
@@ -240,13 +239,13 @@
         const emptyCartMessage = document.getElementById("emptyCartMessage");
         const tdFirst = document.getElementById("1");
         const total = document.getElementById('total');
-        const buyButton = document.getElementById('buyButton');
+        const checkOut = document.getElementById('checkOut');
         if(tdFirst == null) {
             cartTable.style.display = 'none';
             clearCartButton.style.display = 'none';
             emptyCartMessage.style.display = 'block';
             total.style.display = 'none';
-            buyButton.style.display = 'none';
+            checkOut.style.display = 'none';
         }
 
 </script>

@@ -36,8 +36,19 @@ public class UserController{
 	{
 		return "contact";
 	}
+
 	@GetMapping("/buy")
-	public String buy()	{
+	public String buy(Model model) {
+
+//		model.addAttribute("total", AdminController.getCartPrice(usernameforclass));
+//		model.addAttribute("orderTotal", AdminController.getOrderTotal(usernameforclass));
+//		model.addAttribute("couponsForUser", AdminController.getCouponsForUser(usernameforclass));
+//		model.addAttribute("couponsApplied", AdminController.getCouponsApplied(usernameforclass));
+
+		return "/buy";
+	}
+	@GetMapping("/buyCart")
+	public String buyCart()	{
 		// Set up prerequisite variables
 		int transactionID = 0;
 		Set<Integer> products = new HashSet<Integer>();
@@ -122,7 +133,7 @@ public class UserController{
 		catch(Exception e) {
 			System.out.println("Exception:"+e);
 		}
-		return "buy";
+		return "redirect:/buy";
 	}
 	
 	@GetMapping("/user/products")

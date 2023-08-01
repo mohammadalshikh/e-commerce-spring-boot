@@ -33,7 +33,7 @@
 				<ul class="navbar-nav mr-auto"></ul>
 				<ul class="navbar-nav">
 					<li class="nav-item active"><a class="nav-link" href="/adminhome">Home</a></li>
-					<li class="nav-item active"><a class="nav-link" href="/logout">Logout</a>
+					<li class="nav-item active"><a class="nav-link" href="/admin">Logout</a>
 					</li>
 
 				</ul>
@@ -51,6 +51,8 @@
 				<th scope="col">Username</th>
 				<th scope="col">Email</th>
 				<th scope="col">Address</th>
+				<th scope="col">Coupons</th>
+				<th scope="col">Cumulative Total</th>
 			</tr>
 			<tbody>
 				<tr>
@@ -78,6 +80,12 @@
 						</td>
 					<td>
 						<%= rs.getString(5) %>
+					</td>
+					<td>
+
+					</td>
+					<td>
+
 					</td>
 
 				</tr>

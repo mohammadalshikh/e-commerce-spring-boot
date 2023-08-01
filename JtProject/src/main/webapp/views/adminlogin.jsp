@@ -21,18 +21,17 @@
             <h2 class="text-center">Admin Login</h2><br>
             <form action="loginvalidate" method="post">
                 <div class="form-group">
-                    <label for="username">Username :</label>
                     <input type="text" name="username" id="username" placeholder="Username" required class="form-control form-control-lg border border-danger">
                 </div>
 					
                 <div class="form-group">
-                    <label for="password">Password :</label>
                     <input type="password" class="form-control form-control-lg border border-danger	" placeholder="Password" required name="password" id="password">
                 </div><br>
 
                 <input type="submit" value="Login" class="btn btn-primary btn-block">
                 <br><h3 style="color:red;">${message }</h3>
                 <br>
+                <span>User login page <a class="linkControl" href="/">from here</a></span>
         </div>
 
 </div>

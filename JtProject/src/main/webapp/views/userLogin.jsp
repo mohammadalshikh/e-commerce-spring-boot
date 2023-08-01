@@ -180,6 +180,8 @@
             <p class="error-message">${failMessage}</p>
             <button type="submit" class="btn btn-login">Log in</button><br><br>
             <span>Don't have an account? <a class="linkControl" href="#" data-toggle="modal" data-target="#registrationModal">Register here</a></span>
+            <br>
+            <span>Admin login page <a class="linkControl" href="/admin">from here</a></span>
         </form>
     </div>
 

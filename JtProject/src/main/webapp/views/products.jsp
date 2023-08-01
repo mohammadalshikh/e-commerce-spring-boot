@@ -16,6 +16,26 @@
 	crossorigin="anonymous">
 
 <title>Document</title>
+	<style>
+		.btn-action {
+			background-color: #2980b9;
+			color: #fff;
+			border: none;
+			padding: 5px 10px;
+			border-radius: 5px;
+			cursor: pointer;
+			font-size: 14px;
+			margin-right: 100px;
+		}
+
+		.btn-action:hover {
+			color: #fff;
+		}
+
+		#delete {
+
+		}
+	</style>
 </head>
 <body class="bg-light">
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -35,7 +55,7 @@
 				<ul class="navbar-nav mr-auto"></ul>
 				<ul class="navbar-nav">
 					<li class="nav-item active"><a class="nav-link" href="/adminhome">Home</a></li>
-					<li class="nav-item active"><a class="nav-link" href="/logout">Logout</a>
+					<li class="nav-item active"><a class="nav-link" href="/admin">Logout</a>
 					</li>
 
 				</ul>
@@ -43,10 +63,10 @@
 			</div>
 		</div>
 	</nav><br>
+	<div class="d-flex justify-content-end mb-3">
+			<a href="/admin/products/add" id="addProduct" class="btn btn-action">Add product</a>
+	</div>
 	<div class="container-fluid">
-
-		<a style="margin: 20px 0" class="btn btn-primary"
-			href="/admin/products/add">Add Product</a><br>
 		<table class="table">
 
 			<tr>
@@ -56,8 +76,10 @@
 				<th scope="col">Preview</th>
 				<th scope="col">Quantity</th>
 				<th scope="col">Price</th>
+				<th scope="col">Discount</th>
 				<th scope="col">Weight</th>
-				<th scope="col">Descrption</th>
+				<th scope="col">Product pair</th>
+				<th scope="col">Suggested Items</th>
 				<th scope="col">Delete</th>
 				<th scope="col">Update</th>
 			</tr>
@@ -99,8 +121,10 @@
 					<td>
 						<%= rs.getInt(5) %>
 					</td>
-					<td>S
-						<%= rs.getInt(6) %>
+					<td>$<%= rs.getInt(6) %>
+					</td>
+					<td>
+
 					</td>
 					<td>
 						<%= rs.getInt(7) %>
@@ -110,6 +134,9 @@
 					</td>
 
 					<td>
+					<td>
+
+					</td>
 					<form action="products/delete" method="get">
 							<input type="hidden" name="id" value="<%=rs.getInt(1)%>">
 							<input type="submit" value="Delete" class="btn btn-danger">
