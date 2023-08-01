@@ -228,6 +228,27 @@ public class UserController{
 		}
 		return "redirect:/cart";
 	}
+	@GetMapping("clearcustomcart")
+	public String clearCustomCart() {
+		try
+		{
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
+			Statement stmt = con.createStatement();
+			ResultSet rst = stmt.executeQuery("SELECT * from CustomCart where userID = (select user_id from users where username = '" + usernameforclass + "');");
+
+			if (rst.next()) {
+				int userID = rst.getInt("userID");
+				stmt.executeUpdate("DELETE FROM CustomCart WHERE userID = " + userID + ";");
+			}
+
+		}
+		catch(Exception e)
+		{
+			System.out.println("Exception:"+e);
+		}
+		return "redirect:/customCart";
+	}
+
 
 
 
@@ -288,6 +309,23 @@ public class UserController{
 		}
 		return "redirect:/cart";
 	}
+	@GetMapping("deletecustom")
+	public String deleteFromCustomCart(@RequestParam("productID") int productID) {
+		try {
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
+			Statement stmt = con.createStatement();
+
+			ResultSet userResultSet = stmt.executeQuery("select user_id from users where username = '" + usernameforclass + "';");
+			if (userResultSet.next()) {
+				int userID = userResultSet.getInt("user_id");
+				stmt.executeUpdate("delete from CustomCart where userID = " + userID + " and productID = " + productID + ";");
+			}
+		} catch (Exception e) {
+			System.out.println("Exception:" + e);
+		}
+		return "redirect:/customCart";
+	}
+
 
 	@GetMapping("addtocart")
 	public String addItemToCart(@RequestParam("productID") int productID, @RequestParam("quantity") int quantity) {
@@ -304,6 +342,28 @@ public class UserController{
 					stmt.executeUpdate("update Cart set quantity = " + quantity + " where userID = " + userID + " and productID = " + productID + ";");
 				} else {
 					stmt.executeUpdate("insert into Cart (userID, productID, quantity) values (" + userID + ", " + productID + ", " + quantity + ");");
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("Exception:" + e);
+		}
+		return "redirect:/shop";
+	}
+	@GetMapping("addtocustomcart")
+	public String addItemToCustomCart(@RequestParam("productID") int productID, @RequestParam("quantity") int quantity) {
+		try {
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
+			Statement stmt = con.createStatement();
+			ResultSet userResultSet = stmt.executeQuery("select user_id from users where username = '" + usernameforclass + "';");
+			if (userResultSet.next()) {
+				int userID = userResultSet.getInt("user_id");
+				ResultSet cartItemResultSet = stmt.executeQuery("select * from CustomCart where userID = " + userID + " and productID = " + productID + ";");
+				if (cartItemResultSet.next()) {
+					int existingQuantity = cartItemResultSet.getInt("quantity");
+					quantity += existingQuantity;
+					stmt.executeUpdate("update CustomCart set quantity = " + quantity + " where userID = " + userID + " and productID = " + productID + ";");
+				} else {
+					stmt.executeUpdate("insert into CustomCart (userID, productID, quantity) values (" + userID + ", " + productID + ", " + quantity + ");");
 				}
 			}
 		} catch (Exception e) {
