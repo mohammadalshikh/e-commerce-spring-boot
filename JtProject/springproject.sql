@@ -1,3 +1,4 @@
+USE springproject;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -121,8 +122,7 @@ alter table users add coupons int;
 INSERT INTO `cart` (`userID`, `productID`, `quantity`)
 VALUES
     (1, 1, 2),
-    (1, 3, 1),
-    (1, 2, 3);
+    (1, 3, 1);
 
 
 INSERT INTO `CustomCart` (`userID`, `productID`, `quantity`)

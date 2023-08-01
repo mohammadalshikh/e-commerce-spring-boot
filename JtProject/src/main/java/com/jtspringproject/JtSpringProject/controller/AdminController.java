@@ -571,6 +571,36 @@ public class AdminController {
 		return runningTotal;
     }
 
+	public static float getOrderTotal(String username) {
+
+		// Create a variable to hold the total value of the order
+		float orderTotal = getCartPrice(username);
+
+		// Multiply by 1.15 to obtain the cost after tax
+		orderTotal *= 1.15;
+
+		// Obtain the number of coupons applied by the users
+		int noOfCoupons = getCouponsApplied(username);
+		try {
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
+			Statement stmt = con.createStatement();
+
+			// Apply the coupons one at a time, if we reach 0 or a negative value set that to be the number of coupons used and set orderTotal to 0
+			for (int i = 0; i < noOfCoupons; i++) {
+				orderTotal -= 5;
+				if (orderTotal <= 0) {
+					stmt.executeQuery("UPDATE Cart SET quantity = " + i + " WHERE productID = 0 AND userId = (SELECT user_id FROM users WHERE username = '" + username + "');");
+					orderTotal = 0;
+				}
+			}
+
+		}
+		catch (Exception e) {
+			System.out.println("Exception:" + e);
+		}
+		return orderTotal;
+	}
+
     @GetMapping("/admin/customers")
 	public String getCustomerDetail() {
 		return "displayCustomers";
