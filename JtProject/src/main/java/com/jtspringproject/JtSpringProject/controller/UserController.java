@@ -49,6 +49,14 @@ public class UserController{
 		return "contact";
 	}
 
+	@GetMapping("shop")
+	public String shop() {
+
+
+
+		return "shop";
+	}
+
 	@RequestMapping(value = "submitContact", method = RequestMethod.POST )
 	public String submitContact(@RequestParam("name") String name,
 								@RequestParam("email") String email,
@@ -342,7 +350,6 @@ public class UserController{
 		return "redirect:/custom-cart";
 	}
 
-
 	@GetMapping("addtocart")
 	public static String addItemToCart(@RequestParam("productID") int productID, @RequestParam("quantity") int quantity) {
 		try {
@@ -363,7 +370,7 @@ public class UserController{
 		} catch (Exception e) {
 			System.out.println("Exception:" + e);
 		}
-		return "redirect:/shop";
+		return "redirect:/cart";
 	}
 	@GetMapping("addtocustomcart")
 	public static String addItemToCustomCart(@RequestParam("productID") int productID, @RequestParam("quantity") int quantity) {
@@ -385,7 +392,7 @@ public class UserController{
 		} catch (Exception e) {
 			System.out.println("Exception:" + e);
 		}
-		return "redirect:/shop";
+		return "redirect:/custom-cart";
 	}
 
 	@RequestMapping(value = "/buyCart", method = RequestMethod.POST)

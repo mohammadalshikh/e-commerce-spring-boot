@@ -244,9 +244,13 @@
                     <div class="container">
                         <br>
                         <h4>Bananas</h4>
-                        <button type="button" class="btn btn-primary btn-lg">
-                            <i class="fas fa-shopping-cart"></i> Add to Cart
-                        </button>
+                        <form action="/addtocart" method="get">
+                            <input hidden type="number" name="productID" value="5">
+                            <input hidden type="number" name="quantity" value="1">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -255,8 +259,13 @@
                     <img src="https://images.unsplash.com/photo-1552010099-5dc86fcfaa38?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=928&q=80" alt="Restaurant 2">
                     <br><br>
                     <h4>Oranges</h4>
-                    <button type="button" class="btn btn-primary btn-lg">
-                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    <form action="/addtocart" method="get">
+                        <input hidden type="number" name="productID" value="1">
+                        <input hidden type="number" name="quantity" value="1">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </button>
+                    </form>
                 </div>
             </div>
             <div class="col-md-4">
@@ -264,9 +273,13 @@
                     <img src="https://images.unsplash.com/photo-1539248519424-b4b8f9a99a4a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80" alt="Restaurant 3">
                     <br><br>
                     <h4>Watermelon</h4>
-                    <button type="button" class="btn btn-primary btn-lg">
+                    <form action="/addtocart" method="get">
+                        <input hidden type="number" name="productID" value="4">
+                        <input hidden type="number" name="quantity" value="1">
+                    <button type="submit" class="btn btn-primary btn-lg">
                         <i class="fas fa-shopping-cart"></i> Add to Cart
                     </button>
+                    </form>
                 </div>
             </div>
         </div>
