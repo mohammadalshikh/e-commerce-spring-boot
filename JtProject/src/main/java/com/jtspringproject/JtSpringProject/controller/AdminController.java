@@ -492,10 +492,6 @@ public class AdminController {
 				int productID = allProductsRst.getInt("product");
 				String productName = "p" + productID;
 
-				// Find the other product that sold the most with the current product
-//                PreparedStatement eachProductPst = con.prepareStatement("SELECT product FROM ProductMatrix GROUP BY product HAVING MAX(?);");
-//                eachProductPst.setString(1, productName);
-//                ResultSet eachProductRst = eachProductPst.executeQuery();
 				Statement stmt2 = con.createStatement();
 				ResultSet eachProductRst = stmt2.executeQuery("SELECT product FROM ProductMatrix GROUP BY product HAVING MAX(" + productName + ");");
 
@@ -517,7 +513,6 @@ public class AdminController {
 		}
 	}
 
-	// TODO: waiting for front end -dom
 	@GetMapping("/suggestItem")
 	public static String suggestItem(@RequestParam("productID") int productID, @RequestParam("suggestedID") int suggestedID) {
 		try {
