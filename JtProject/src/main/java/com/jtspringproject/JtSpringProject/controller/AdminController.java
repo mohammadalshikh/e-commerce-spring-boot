@@ -1,6 +1,7 @@
 package com.jtspringproject.JtSpringProject.controller;
 
 import java.sql.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -257,10 +258,10 @@ public class AdminController {
 				// Verify that the product is not a coupon product
 				if(cartItemsRst.getInt("productID") != 0) {
 					// Update product quantities
-					PreparedStatement updateProductPst = con.prepareStatement("UPDATE products SET quantity = quantity - ? WHERE productID = ?;");
+					PreparedStatement updateProductPst = con.prepareStatement("UPDATE products SET quantity = quantity - ? WHERE id = ?;");
 					updateProductPst.setInt(1, cartItemsRst.getInt("quantity"));
 					updateProductPst.setInt(2, cartItemsRst.getInt("productID"));
-					updateProductPst.executeQuery();
+					updateProductPst.executeUpdate();
 				}
 			}
 		}
@@ -283,7 +284,7 @@ public class AdminController {
 				PreparedStatement updateProductPst = con.prepareStatement("UPDATE users SET coupons = coupons - ? WHERE  userID = ?;");
 				updateProductPst.setInt(1, cartItemsRst.getInt("quantity"));
 				updateProductPst.setInt(2, cartItemsRst.getInt("userID"));
-				updateProductPst.executeQuery();
+				updateProductPst.executeUpdate();
 			}
 		}
 		catch(Exception e) {
@@ -301,7 +302,7 @@ public class AdminController {
 			Statement stmt = con.createStatement();
 
 			// Get total spent from current transaction
-			currentTransaction = AdminController.getCartPrice(username);
+			currentTransaction = AdminController.getOrderTotal(username);
 
 			// Check user's cumulativeTotal
 			ResultSet cumulativeTotalRst = stmt.executeQuery("SELECT cumulativeTotal FROM users WHERE username = '" + username + "';");
@@ -409,13 +410,13 @@ public class AdminController {
 			// Remove product as tuple from ProductMatrix
 			PreparedStatement removeFromPMRowPst = con.prepareStatement("DELETE FROM ProductMatrix WHERE product = ?;");
 			removeFromPMRowPst.setInt(1, id);
-			removeFromPMRowPst.executeQuery();
+			removeFromPMRowPst.executeUpdate();
 
 			// Remove product as attribute from ProductMatrix
 			PreparedStatement addToPMColumnPst = con.prepareStatement("ALTER TABLE ProductMatrix DROP COLUMN '?';");
 			String productName = "p" + id;
 			addToPMColumnPst.setString(1, productName);
-			addToPMColumnPst.executeQuery();
+			addToPMColumnPst.executeUpdate();
 
 			// Remove product from products
 			PreparedStatement pst = con.prepareStatement("delete from products where id = ? ;");
@@ -467,13 +468,13 @@ public class AdminController {
 				// Add newly added product as tuple in ProductMatrix
 				PreparedStatement addToPMRowPst = con.prepareStatement("INSERT INTO ProductMatrix (product) VALUES (?);");
 				addToPMRowPst.setInt(1, itemID);
-				addToPMRowPst.executeQuery();
+				addToPMRowPst.executeUpdate();
 
 				// Add newly added product as attribute in ProductMatrix
 				PreparedStatement addToPMColumnPst = con.prepareStatement("ALTER TABLE ProductMatrix ADD '?' int default 0;");
 				String productName = "p" + itemID;
 				addToPMColumnPst.setString(1, productName);
-				addToPMColumnPst.executeQuery();
+				addToPMColumnPst.executeUpdate();
 			}
 		} catch (Exception e) {
 			System.out.println("Exception:" + e);
@@ -507,7 +508,7 @@ public class AdminController {
 					PreparedStatement newPairPst = con.prepareStatement("UPDATE products SET productPair = ? WHERE id = ?;");
 					newPairPst.setInt(1, pairID);
 					newPairPst.setInt(2, productID);
-					newPairPst.executeQuery();
+					newPairPst.executeUpdate();
 				}
 			}
 		}
@@ -679,7 +680,8 @@ public class AdminController {
 
 	@GetMapping("profileDisplay")
 	public String profileDisplay(Model model) {
-		String displayusername, displaypassword, displayemail, displayaddress;
+		String displayusername, displaypassword, displayemail, displayaddress, displaytotal;
+		int displaycoupons;
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 			Statement stmt = con.createStatement();
@@ -691,11 +693,15 @@ public class AdminController {
 				displayemail = rst.getString(6);
 				displaypassword = rst.getString(3);
 				displayaddress = rst.getString(5);
+				displaycoupons = rst.getInt("coupons");
+				displaytotal = new DecimalFormat("0.00").format(rst.getFloat("cumulativeTotal"));
 				model.addAttribute("userid", userid);
 				model.addAttribute("username", displayusername);
 				model.addAttribute("email", displayemail);
 				model.addAttribute("password", displaypassword);
 				model.addAttribute("address", displayaddress);
+				model.addAttribute("userCoupons", displaycoupons);
+				model.addAttribute("cumulativeTotal", displaytotal);
 			}
 		} catch (Exception e) {
 			System.out.println("Exception:" + e);
