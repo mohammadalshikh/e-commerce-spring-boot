@@ -20,14 +20,10 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import com.jtspringproject.JtSpringProject.CartItem;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 public class UserController{
@@ -467,6 +463,8 @@ public class UserController{
 				}
 			}
 
+			// Update product pairs
+			AdminController.updateProductPairs();
 			// Update product stock
 			AdminController.updateProductStockFromCart(usernameforclass);
 			// Update user coupons

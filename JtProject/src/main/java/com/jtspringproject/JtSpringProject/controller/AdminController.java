@@ -1,11 +1,7 @@
 package com.jtspringproject.JtSpringProject.controller;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
-import com.jtspringproject.JtSpringProject.CartItem;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -66,6 +62,7 @@ public class AdminController {
 		} catch (Exception e) {
 			System.out.println("Exception:" + e);
 		}
+
 		return "userLogin";
 
 
@@ -152,7 +149,7 @@ public class AdminController {
 			int i = pst.executeUpdate();
 
 			// Update suggested item
-			AdminController.updateProductPair();
+			AdminController.updateProductPairs();
 
 		} catch (Exception e) {
 			System.out.println("Exception:" + e);
@@ -257,10 +254,10 @@ public class AdminController {
 				// Verify that the product is not a coupon product
 				if(cartItemsRst.getInt("productID") != 0) {
 					// Update product quantities
-					PreparedStatement updateProductPst = con.prepareStatement("UPDATE products SET quantity = quantity - ? WHERE productID = ?;");
+					PreparedStatement updateProductPst = con.prepareStatement("UPDATE products SET quantity = quantity - ? WHERE id = ?;");
 					updateProductPst.setInt(1, cartItemsRst.getInt("quantity"));
 					updateProductPst.setInt(2, cartItemsRst.getInt("productID"));
-					updateProductPst.executeQuery();
+					updateProductPst.executeUpdate();
 				}
 			}
 		}
@@ -283,7 +280,7 @@ public class AdminController {
 				PreparedStatement updateProductPst = con.prepareStatement("UPDATE users SET coupons = coupons - ? WHERE  userID = ?;");
 				updateProductPst.setInt(1, cartItemsRst.getInt("quantity"));
 				updateProductPst.setInt(2, cartItemsRst.getInt("userID"));
-				updateProductPst.executeQuery();
+				updateProductPst.executeUpdate();
 			}
 		}
 		catch(Exception e) {
@@ -423,7 +420,7 @@ public class AdminController {
 			int i = pst.executeUpdate();
 
 			// Update suggested item
-			AdminController.updateProductPair();
+			AdminController.updateProductPairs();
 		} catch (Exception e) {
 			System.out.println("Exception:" + e);
 		}
@@ -458,9 +455,6 @@ public class AdminController {
 
 
 				// Get id of newly added product
-//				PreparedStatement getItemIDPst = con.prepareStatement("SELECT id FROM products WHERE name = /'?';");
-//				getItemIDPst.setString(1, name);
-//				ResultSet getItemIDRst = getItemIDPst.executeQuery();
 				ResultSet getItemIDRst = stmt.executeQuery("SELECT id FROM products WHERE name = '" + name + "';");
 				int itemID = getItemIDRst.getInt("id");
 
@@ -481,7 +475,7 @@ public class AdminController {
 		return "redirect:/admin/products";
 	}
 
-	public static void updateProductPair() {
+	public static void updateProductPairs() {
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
 			Statement stmt = con.createStatement();
@@ -492,22 +486,26 @@ public class AdminController {
 				// Get the ID and attribute name of the current product
 				int productID = allProductsRst.getInt("product");
 				String productName = "p" + productID;
+				System.out.println(productName);
 
 				// Find the other product that sold the most with the current product
-				PreparedStatement eachProductPst = con.prepareStatement("SELECT product FROM ProductMatrix GROUP BY product HAVING MAX(?);");
-				eachProductPst.setString(1, productName);
-				ResultSet eachProductRst = eachProductPst.executeQuery();
+//                PreparedStatement eachProductPst = con.prepareStatement("SELECT product FROM ProductMatrix GROUP BY product HAVING MAX(?);");
+//                eachProductPst.setString(1, productName);
+//                ResultSet eachProductRst = eachProductPst.executeQuery();
+				Statement stmt2 = con.createStatement();
+				ResultSet eachProductRst = stmt2.executeQuery("SELECT product FROM ProductMatrix GROUP BY product HAVING MAX(" + productName + ");");
 
 				// Check if the query resulted in a tuple
 				if(eachProductRst.next()) {
 					// Get the id of the suggested product
 					int pairID = eachProductRst.getInt("product");
+					System.out.println(pairID);
 
 					// Update the productPair value of the current product
 					PreparedStatement newPairPst = con.prepareStatement("UPDATE products SET productPair = ? WHERE id = ?;");
 					newPairPst.setInt(1, pairID);
 					newPairPst.setInt(2, productID);
-					newPairPst.executeQuery();
+					newPairPst.executeUpdate();
 				}
 			}
 		}
@@ -517,22 +515,20 @@ public class AdminController {
 	}
 
 	// TODO: waiting for front end -dom
-//	@GetMapping("/suggestItem")
-//	public static void updateSuggestedItem(@RequestParam("productID") int productID, @RequestParam("suggestedID") int suggestedID) {
-//		try {
-//			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
-//			Statement stmt = con.createStatement();
-//
-//			// Update suggestedItem of current product
-//			PreparedStatement suggestItemPst = con.prepareStatement("UPDATE products SET suggestedItem = ? WHERE id = ?;");
-//			suggestItemPst.setInt(1, suggestedID);
-//			suggestItemPst.setInt(2, productID);
-//			suggestItemPst.executeUpdate();
-//		}
-//		catch(Exception e) {
-//			System.out.println("Exception:"+e);
-//		}
-//	}
+	@GetMapping("/suggestItem")
+	public static String suggestItem(@RequestParam("productID") int productID, @RequestParam("suggestedID") int suggestedID) {
+		try {
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
+			Statement stmt = con.createStatement();
+
+			// Update suggestedItem of current product
+			stmt.executeUpdate("UPDATE products SET suggestedItem = " + suggestedID + " WHERE id = " + productID + ";");
+		}
+		catch(Exception e) {
+			System.out.println("Exception:"+e);
+		}
+		return "redirect:/admin/products";
+	}
 
     public static float getProductPrice(int productID, int quantity) {
 
