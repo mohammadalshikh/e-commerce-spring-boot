@@ -371,6 +371,7 @@ public class AdminController {
 			}
 			else {
 				UserController.addItemToCart(0, coupons);
+				System.out.println();
 			}
 		}
 		catch (Exception e) {
