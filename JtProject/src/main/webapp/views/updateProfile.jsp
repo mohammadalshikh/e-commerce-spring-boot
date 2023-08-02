@@ -134,9 +134,17 @@
                 <input type="checkbox" onclick="showPassword()"> Show password
             </div>
             <div class="form-group">
-                <label for="Address">Address</label>
+                <label for="address">Address</label>
                 <textarea class="form-control form-control-lg" rows="3" placeholder="Enter Your Address"
                           name="address">${address}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Coupons Owned</label>
+                <input class="form-control form-control-lg" readonly="true" value="${userCoupons}">
+            </div>
+            <div class="form-group">
+                <label>Total Before Reaching Next Coupon</label>
+                <input class="form-control form-control-lg" readonly="true" value="${cumulativeTotal}">
             </div>
 
             <input type="submit" value="Update Profile" class="btn btn-primary btn-block"><br>
