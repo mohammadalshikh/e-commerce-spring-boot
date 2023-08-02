@@ -26,7 +26,7 @@
         }
 
         .bg-image-wrapper {
-            background-image: url('../bg.jpg'); /* Set the background image */
+            background-image: url('../bg.jpg');
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center top;
@@ -121,6 +121,15 @@
             color: #e74c3c;
         }
 
+
+        .disabled-input {
+            background-color: transparent;
+            border: none;
+            pointer-events: none;
+            font-size: inherit;
+            color: black;
+        }
+
     </style>
 </head>
 <body>
@@ -163,47 +172,55 @@
     <h1>My Custom Cart</h1>
 
     <div class="d-flex justify-content-end mb-3">
-        <form action="/clearcart" method="get">
+        <form action="/clearcustomcart" method="get">
             <button type="submit" id="clearCart" class="btn btn-action">Clear cart</button>
         </form>
-        <a href="/cart" class="btn btn-action">Show cart</a>
+        <a id="show" href="/cart" class="btn btn-action">Show cart</a>
+        <input id="edit" type="button" value="Edit quantities" class="btn btn-action" onClick="editMode()">
+        <button id="confirm" hidden type="submit" form="updateQuantity" class="btn btn-action">Confirm changes</button>
+        <input hidden id="cancel" type="button" value="Cancel" class="btn btn-action" onClick="cancel()">
     </div>
-
-    <table class="table" id="cartTable">
-        <thead>
-        <br>
-        <tr>
-            <th>Product Name</th>
-            <th>Quantity</th>
-            <th>Total Price</th>
-            <th></th>
-        </tr>
-        <tr>
+    <br>
+    <form action="/updateCustomCartItemQuantity" id="updateQuantity" method="get">
+        <table class="table" id="cartTable">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Total Price</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
             <%-- Get the cartItems ArrayList from the Model object --%>
-            <% ArrayList<CustomCartItem> customCartItems = (ArrayList<CustomCartItem>) request.getAttribute("customCartItems"); %>
+            <% ArrayList<CustomCartItem> cartItems = (ArrayList<CustomCartItem>) request.getAttribute("customCartItems"); %>
 
             <%-- Loop through the cart items and populate the table --%>
-            <% for (CustomCartItem item : customCartItems) { %>
-        </tr>
-        <tr>
-            <td id="1"><%= item.getProductName() %></td>
-            <td><%= item.getQuantity() %></td>
-            <td>$<%= item.getTotalPrice() %></td>
-            <td>
-                <!-- Add the "Delete" button for each product -->
-                <form action="/deletecustom" method="get">
-                    <input type="hidden" name="productID" value="<%= item.getProductID() %>">
-                    <button type="submit" class="btn btn-delete">Remove</button>
-                </form>
-            </td>
-        </tr>
-        <% } %>
-        </thead>
-        <tbody id="cartItems">
-        </tbody>
-    </table>
+            <% for (CustomCartItem item : cartItems) { %>
+            <tr>
+                <td></td>
+                <td style="width: 250px" id="1"><%= item.getProductName() %></td>
+                <td style="width: 250px">
+                    <input pattern="[1-9][0-9]*" min="1" style="width: 80px" class="disabled-input" disabled type="number" name="<%= item.getProductID() %>|quantity" value="<%= item.getQuantity() %>">
+                    <!-- Add a hidden input to store the productID -->
+                    <input type="hidden" name="productIDs" value="<%= item.getProductID() %>">
+                </td>
+                <td style="width: 250px">$<%= item.getTotalPrice() %></td>
+                <td>
+                    <!-- Add the "Delete" button for each product -->
+                    <form action="/deletecustom" method="get">
+                        <input type="hidden" name="productID" value="<%= item.getProductID() %>">
+                        <button type="submit" class="btn btn-delete">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            <% } %>
+            </tbody>
+        </table>
+    </form>
     <br>
-    <p class="empty-cart-message" id="emptyCartMessage">Your custom cart is currently empty, add some products to view them here. <br><br><a href="/shop">Go to shop page</a></p>
+    <p class="empty-cart-message" id="emptyCartMessage">Your cart is currently empty, add some products to view them here. <br><br><a href="/shop">Go to shop page</a></p>
     <p id="total">Total: $${total}</p>
 </div>
 
@@ -224,12 +241,36 @@
     const emptyCartMessage = document.getElementById("emptyCartMessage");
     const tdFirst = document.getElementById("1");
     const total = document.getElementById('total');
+
     if(tdFirst == null) {
         cartTable.style.display = 'none';
         clearCartButton.style.display = 'none';
         emptyCartMessage.style.display = 'block';
         total.style.display = 'none';
-        checkOut.style.display = 'none';
+        document.getElementById("edit").hidden = true;
+    }
+
+
+    function editMode() {
+        document.getElementById("clearCart").hidden = true;
+        document.getElementById("show").hidden = true;
+        document.getElementById("edit").hidden = true;
+        document.getElementById("confirm").hidden = false;
+        document.getElementById("cancel").hidden = false;
+
+        const quantityInputs = document.querySelectorAll('input[name*="|quantity"]');
+
+        quantityInputs.forEach((input) => {
+            input.removeAttribute("disabled");
+            input.classList.remove("disabled-input");
+            input.style.backgroundColor = "white";
+            input.style.border = "1px solid #ccc";
+        });
+    }
+
+
+    function cancel() {
+        location.reload();
     }
 
 </script>

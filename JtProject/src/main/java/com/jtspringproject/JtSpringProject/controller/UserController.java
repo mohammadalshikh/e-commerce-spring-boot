@@ -310,6 +310,7 @@ public class UserController{
 
 	@GetMapping("deleteitem")
 	public String deleteItemFromCart(@RequestParam("productID") int productID) {
+		System.out.println("hwlooo"+ productID);
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 			Statement stmt = con.createStatement();
@@ -365,7 +366,7 @@ public class UserController{
 		return "redirect:/shop";
 	}
 	@GetMapping("addtocustomcart")
-	public String addItemToCustomCart(@RequestParam("productID") int productID, @RequestParam("quantity") int quantity) {
+	public static String addItemToCustomCart(@RequestParam("productID") int productID, @RequestParam("quantity") int quantity) {
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 			Statement stmt = con.createStatement();
@@ -525,7 +526,24 @@ public class UserController{
 					int quantity;
 					productID = Integer.parseInt(productIDString);
 					quantity = Integer.parseInt(quantityString);
-					addItemToCart(productID, quantity);
+
+					try {
+						Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
+						Statement stmt = con.createStatement();
+						if(quantity != 0) {
+							PreparedStatement pst = con.prepareStatement("UPDATE Cart SET quantity = ? WHERE productID = ? AND userID = ?;");
+							pst.setInt(1, quantity);
+							pst.setInt(2, productID);
+							pst.setInt(3, AdminController.getUserID());
+							pst.executeUpdate();
+						}
+					else {
+						UserController.addItemToCart(productID, quantity);
+					}
+				}
+				catch (Exception e) {
+					System.out.println(e);
+				}
 			}
 		}
 
@@ -564,6 +582,40 @@ public class UserController{
 		model.addAttribute("total", AdminController.getCustomCartPrice(usernameforclass));
 
 		return "custom-cart";
+	}
+
+	@GetMapping("updateCustomCartItemQuantity")
+	public String updateCustomCartItemQuantity(@RequestParam MultiValueMap<String, String> params) {
+		for (String key : params.keySet()) {
+			if (key.matches(".+\\|quantity")) {
+				String productIDString = key.substring(0, key.indexOf('|'));
+				String quantityString = params.getFirst(key);
+				int productID;
+				int quantity;
+				productID = Integer.parseInt(productIDString);
+				quantity = Integer.parseInt(quantityString);
+
+				try {
+					Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
+					Statement stmt = con.createStatement();
+					if(quantity != 0) {
+						PreparedStatement pst = con.prepareStatement("UPDATE CustomCart SET quantity = ? WHERE productID = ? AND userID = ?;");
+						pst.setInt(1, quantity);
+						pst.setInt(2, productID);
+						pst.setInt(3, AdminController.getUserID());
+						pst.executeUpdate();
+					}
+					else {
+						UserController.addItemToCustomCart(productID, quantity);
+					}
+				}
+				catch (Exception e) {
+					System.out.println(e);
+				}
+			}
+		}
+
+		return "redirect:/custom-cart";
 	}
 
 }

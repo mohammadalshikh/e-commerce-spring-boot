@@ -183,36 +183,6 @@
         .footer a:hover {
             color: #e74c3c;
         }
-
-
-        @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-
-        @keyframes fireAnimation {
-            0% { transform: scale(1) rotate(0); box-shadow: 0 0 5px 3px #FF4500; }
-            50% { transform: scale(1.2) rotate(5deg); box-shadow: 0 0 20px 10px #FF4500; }
-            100% { transform: scale(1) rotate(0); box-shadow: 0 0 5px 3px #FF4500; }
-        }
-
-        .hot-deals-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 20vh;
-        }
-
-        .hot-deals {
-            font-family: Montserrat, Arial, sans-serif;
-            font-size: 48px;
-            font-weight: bold;
-            color: #FF4500;
-            animation: fadeIn 1.5s ease-in-out, fireAnimation 2s infinite ease-in-out;
-            transform-style: preserve-3d;
-            font-style: italic;
-            text-shadow: 0 0 5px #FF4500;
-        }
     </style>
 </head>
 <body>
@@ -264,21 +234,13 @@
         </div>
     </section>
 </div>
-
+<br>
 <section class="restaurant-section">
     <div class="container">
-        <div class="hot-deals-container">
-            <div class="hot-deals">Hot Deals &#x1F525;</div>
-        </div>
         <div class="row">
             <div class="col-md-4">
                 <div class="restaurant-item">
                     <img src="https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1839&q=80" alt="Restaurant 1">
-
-
-
-
-                    <br>
                     <div class="container">
                         <br>
                         <h4>Bananas</h4>
@@ -286,12 +248,6 @@
                             <i class="fas fa-shopping-cart"></i> Add to Cart
                         </button>
                     </div>
-
-
-
-
-
-
                 </div>
             </div>
             <div class="col-md-4">
@@ -303,10 +259,6 @@
                         <i class="fas fa-shopping-cart"></i> Add to Cart
                 </div>
             </div>
-
-
-
-
             <div class="col-md-4">
                 <div class="restaurant-item">
                     <img src="https://images.unsplash.com/photo-1539248519424-b4b8f9a99a4a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80" alt="Restaurant 3">
@@ -314,6 +266,8 @@
                     <h4>Watermelon</h4>
                     <button type="button" class="btn btn-primary btn-lg">
                         <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </button>
+                </div>
             </div>
         </div>
     </div>

@@ -224,7 +224,6 @@
                 </td>
                 <td style="width: 250px">$<%= item.getTotalPrice() %></td>
                 <td>
-                    <!-- Add the "Delete" button for each product -->
                     <form action="/deleteitem" method="get">
                         <input type="hidden" name="productID" value="<%= item.getProductID() %>">
                         <button type="submit" class="btn btn-delete">Remove</button>
@@ -269,7 +268,6 @@
             checkOut.style.display = 'none';
             document.getElementById("edit").hidden = true;
         }
-
 
         function editMode() {
             document.getElementById("add").hidden = true;
