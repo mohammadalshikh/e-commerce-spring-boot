@@ -117,8 +117,7 @@
 					</div>
 					<p>Product Image</p>
 					<div class="custom-file">
-						<input type="file" class="custom-file-input" name="productImage" accept="image/jpeg, image/png" id="productImage" onchange="loadFile(event)" />
-						<label class="custom-file-label border border-warning" for="productImage">Choose file</label>
+							<input type="text" class="form-control border border-warning" required name="productImage" id="productImage" placeholder="Enter image link">
 					</div>
 					<div class="form-group">
 						<img src="" hidden id="imgPreview" height="100px" width="100px"

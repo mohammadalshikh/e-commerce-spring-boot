@@ -82,10 +82,10 @@
 						<%= rs.getString(5) %>
 					</td>
 					<td>
-
+						<%= rs.getInt(8)%>
 					</td>
 					<td>
-
+						<%= rs.getInt(7)%>
 					</td>
 
 				</tr>
