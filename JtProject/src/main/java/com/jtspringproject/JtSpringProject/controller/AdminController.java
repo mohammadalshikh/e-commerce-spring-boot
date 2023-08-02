@@ -192,7 +192,9 @@ public class AdminController {
 	@GetMapping("/admin/products/update")
 	public String updateproduct(@RequestParam("pid") int id, Model model) {
 		String pname, pdescription, pimage;
-		int pid, pprice, pweight, pquantity, pcategory;
+		int pid, pweight, pquantity, pcategory;
+		float pprice;
+		double pdiscount;
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 			Statement stmt = con.createStatement();
@@ -205,9 +207,10 @@ public class AdminController {
 				pimage = rst.getString(3);
 				pcategory = rst.getInt(4);
 				pquantity = rst.getInt(5);
-				pprice = rst.getInt(6);
+				pprice = rst.getFloat(6);
 				pweight = rst.getInt(7);
 				pdescription = rst.getString(8);
+				pdiscount = rst.getDouble(9);
 				model.addAttribute("pid", pid);
 				model.addAttribute("pname", pname);
 				model.addAttribute("pimage", pimage);
@@ -219,6 +222,7 @@ public class AdminController {
 				model.addAttribute("pprice", pprice);
 				model.addAttribute("pweight", pweight);
 				model.addAttribute("pdescription", pdescription);
+				model.addAttribute("pdiscount", pdiscount);
 			}
 		} catch (Exception e) {
 			System.out.println("Exception:" + e);
@@ -227,18 +231,18 @@ public class AdminController {
 	}
 
 	@RequestMapping(value = "admin/products/updateData", method = RequestMethod.POST)
-	public String updateproducttodb(@RequestParam("id") int id, @RequestParam("name") String name, @RequestParam("price") int price, @RequestParam("weight") int weight, @RequestParam("quantity") int quantity, @RequestParam("description") String description, @RequestParam("productImage") String picture) {
+	public String updateproducttodb(@RequestParam("id") int id, @RequestParam("name") String name, @RequestParam("price") float price, @RequestParam("weight") int weight, @RequestParam("quantity") int quantity, @RequestParam("description") String description, @RequestParam("productImage") String picture, @RequestParam("discount") double discount) {
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
-
-			PreparedStatement pst = con.prepareStatement("update products set name= ?,image = ?,quantity = ?, price = ?, weight = ?,description = ? where id = ?;");
+			PreparedStatement pst = con.prepareStatement("update products set name= ?,image = ?,quantity = ?, price = ?, weight = ?,description = ?, discount = ? where id = ?;");
 			pst.setString(1, name);
 			pst.setString(2, picture);
 			pst.setInt(3, quantity);
-			pst.setInt(4, price);
+			pst.setFloat(4, price);
 			pst.setInt(5, weight);
 			pst.setString(6, description);
-			pst.setInt(7, id);
+			pst.setDouble(7, discount);
+			pst.setInt(8, id);
 			int i = pst.executeUpdate();
 		} catch (Exception e) {
 			System.out.println("Exception:" + e);
@@ -282,7 +286,7 @@ public class AdminController {
 			// Verify that there was a coupon used
 			if(cartItemsRst.next()) {
 				// Update user coupon quantity
-				PreparedStatement updateProductPst = con.prepareStatement("UPDATE users SET coupons = coupons - ? WHERE  userID = ?;");
+				PreparedStatement updateProductPst = con.prepareStatement("UPDATE users SET coupons = coupons - ? WHERE  user_id = ?;");
 				updateProductPst.setInt(1, cartItemsRst.getInt("quantity"));
 				updateProductPst.setInt(2, cartItemsRst.getInt("userID"));
 				updateProductPst.executeUpdate();
@@ -414,10 +418,9 @@ public class AdminController {
 			removeFromPMRowPst.executeUpdate();
 
 			// Remove product as attribute from ProductMatrix
-			PreparedStatement addToPMColumnPst = con.prepareStatement("ALTER TABLE ProductMatrix DROP COLUMN '?';");
 			String productName = "p" + id;
-			addToPMColumnPst.setString(1, productName);
-			addToPMColumnPst.executeUpdate();
+			Statement stmt2 = con.createStatement();
+			stmt2.executeUpdate("ALTER TABLE ProductMatrix DROP COLUMN "  + productName + ";");
 
 			// Remove product from products
 			PreparedStatement pst = con.prepareStatement("delete from products where id = ? ;");
@@ -438,7 +441,7 @@ public class AdminController {
 	}
 
 	@RequestMapping(value = "admin/products/sendData", method = RequestMethod.POST)
-	public String addproducttodb(@RequestParam("name") String name, @RequestParam("categoryid") String catid, @RequestParam("price") int price, @RequestParam("weight") int weight, @RequestParam("quantity") int quantity, @RequestParam("description") String description, @RequestParam("productImage") String picture) {
+	public String addproducttodb(@RequestParam("name") String name, @RequestParam("categoryid") String catid, @RequestParam("price") float price, @RequestParam("weight") int weight, @RequestParam("quantity") int quantity, @RequestParam("description") String description, @RequestParam("productImage") String picture, @RequestParam("discount") double discount) {
 
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
@@ -448,14 +451,15 @@ public class AdminController {
 				// Add product to products
 				int categoryid = rs.getInt(1);
 
-				PreparedStatement pst = con.prepareStatement("insert into products(name,image,categoryid,quantity,price,weight,description) values(?,?,?,?,?,?,?);");
+				PreparedStatement pst = con.prepareStatement("insert into products(name,image,categoryid,quantity,price,weight,description, discount) values(?,?,?,?,?,?,?,?);");
 				pst.setString(1, name);
 				pst.setString(2, picture);
 				pst.setInt(3, categoryid);
 				pst.setInt(4, quantity);
-				pst.setInt(5, price);
+				pst.setFloat(5, price);
 				pst.setInt(6, weight);
 				pst.setString(7, description);
+				pst.setDouble(8, discount);
 				int i = pst.executeUpdate();
 
 

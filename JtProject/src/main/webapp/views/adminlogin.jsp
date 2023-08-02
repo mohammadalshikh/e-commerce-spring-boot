@@ -10,6 +10,14 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
           integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <title>Document</title>
+    <style>
+        .error-message {
+            color: red;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body class="bg-dark">
 
@@ -26,10 +34,9 @@
 					
                 <div class="form-group">
                     <input type="password" class="form-control form-control-lg border border-danger	" placeholder="Password" required name="password" id="password">
-                </div><br>
-
+                </div>
+                <p class="error-message">${message}</p>
                 <input type="submit" value="Log in" class="btn btn-primary btn-block">
-                <br><h3 style="color:red;">${message}</h3>
                 <br>
                 <span>User login page from <a class="linkControl" href="/">here</a></span>
         </div>

@@ -183,6 +183,7 @@
         .footer a:hover {
             color: #e74c3c;
         }
+
     </style>
 </head>
 <body>
@@ -240,15 +241,23 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="restaurant-item">
-                    <img src="https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1839&q=80" alt="Restaurant 1">
+                    <img src="https://assets.stickpng.com/thumbs/5a02130a18e87004f1ca437d.png" alt="Banana">
                     <div class="container">
                         <br>
-                        <h4>Bananas</h4>
-                        <form action="/addtocart" method="get">
-                            <input hidden type="number" name="productID" value="5">
+                        <h4>Banana - 2$</h4>
+                        <form action="/addtocart" method="get" id="ac1">
+                            <input hidden type="number" name="productID" value="6">
                             <input hidden type="number" name="quantity" value="1">
-                            <button type="submit" class="btn btn-primary btn-lg">
+                            <button style="background-color: #E74B3C; border-color: #E74B3C;" type="submit" class="btn btn-primary btn-lg">
                                 <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                        </form>
+                        <br>
+                        <form action="/addtocustomcart" method="get" id="acc1">
+                            <input hidden type="number" name="productID" value="6">
+                            <input hidden type="number" name="quantity" value="1">
+                            <button style="background-color: #027BFF; font-size: 14px;" type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-shopping-cart"></i> Add to Custom Cart
                             </button>
                         </form>
                     </div>
@@ -256,29 +265,45 @@
             </div>
             <div class="col-md-4">
                 <div class="restaurant-item">
-                    <img src="https://images.unsplash.com/photo-1552010099-5dc86fcfaa38?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=928&q=80" alt="Restaurant 2">
+                    <img src="https://clipart-library.com/images_k/orange-transparent-background/orange-transparent-background-2.png" alt="Orange">
                     <br><br>
-                    <h4>Oranges</h4>
-                    <form action="/addtocart" method="get">
+                    <h4>Orange - 3$</h4>
+                    <form action="/addtocart" method="get" id="ac2">
                         <input hidden type="number" name="productID" value="1">
                         <input hidden type="number" name="quantity" value="1">
-                        <button type="submit" class="btn btn-primary btn-lg">
+                        <button style="background-color: #E74B3C; border-color: #E74B3C;" type="submit" class="btn btn-primary btn-lg">
                             <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </button>
+                    </form>
+                    <br>
+                    <form action="/addtocustomcart" method="get" id="acc2">
+                        <input hidden type="number" name="productID" value="1">
+                        <input hidden type="number" name="quantity" value="1">
+                        <button style="background-color: #027BFF; font-size: 14px;" type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-shopping-cart"></i> Add to Custom Cart
                         </button>
                     </form>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="restaurant-item">
-                    <img src="https://images.unsplash.com/photo-1539248519424-b4b8f9a99a4a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80" alt="Restaurant 3">
+                    <img src="https://clipart-library.com/new_gallery/44-444830_share-this-article-watermelon-png.png" alt="Watermelon">
                     <br><br>
-                    <h4>Watermelon</h4>
-                    <form action="/addtocart" method="get">
-                        <input hidden type="number" name="productID" value="4">
+                    <h4>Watermelon - 10$</h4>
+                    <form action="/addtocart" method="get" id="ac3">
+                        <input hidden type="number" name="productID" value="5">
                         <input hidden type="number" name="quantity" value="1">
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        <i class="fas fa-shopping-cart"></i> Add to Cart
-                    </button>
+                        <button style="background-color: #E74B3C; border-color: #E74B3C;" type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </button>
+                    </form>
+                    <br>
+                    <form action="/addtocustomcart" method="get" id="acc3">
+                        <input hidden type="number" name="productID" value="5">
+                        <input hidden type="number" name="quantity" value="1">
+                        <button style="background-color: #027BFF; font-size: 14px;" type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-shopping-cart"></i> Add to Custom Cart
+                        </button>
                     </form>
                 </div>
             </div>
@@ -308,11 +333,17 @@
             const sampleResults = [
                 'Apple',
                 'Banana',
-                'Cherry',
                 'Grapes',
                 'Orange',
                 'Pineapple',
-                'Strawberry'
+                'Beef',
+                'Lettuce',
+                'Tomato',
+                'Corn',
+                'Cucumber',
+                'Watermelon',
+                'Potato',
+                'Onion'
             ];
 
             const filteredResults = sampleResults.filter(result => result.toLowerCase().includes(query.toLowerCase()));

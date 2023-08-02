@@ -33,9 +33,7 @@
 			color: #fff;
 		}
 
-		#delete {
 
-		}
 	</style>
 </head>
 <body class="bg-light">
@@ -126,7 +124,7 @@
 					<td>$<%= rs.getInt(6) %>
 					</td>
 					<td>
-						<%= rs.getInt(9) %>
+						<%= rs.getDouble(9) %>
 					</td>
 					<td>
 						<%= rs.getInt(7) %>
@@ -170,11 +168,9 @@
 						</form>
 
 					<td>
-
-					</td>
 					<form action="products/delete" method="get">
-							<input type="hidden" name="id" value="<%=rs.getInt(1)%>">
-							<input type="submit" value="Delete" class="btn btn-danger">
+						<input type="hidden" name="id" value="<%=rs.getInt(1)%>">
+						<input id="delete" type="submit" value="Delete" class="btn btn-danger">
 					</form>
 					</td>
 					<td>

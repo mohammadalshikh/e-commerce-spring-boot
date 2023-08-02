@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.*;
 
 import com.jtspringproject.JtSpringProject.CustomCartItem;
+import com.jtspringproject.JtSpringProject.ShopItem;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,9 +47,37 @@ public class UserController{
 	}
 
 	@GetMapping("shop")
-	public String shop() {
+	public String shop(Model model) {
+		ArrayList<ShopItem> shopItems = new ArrayList<>();
+		try {
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
+			Statement stmt = con.createStatement();
+			ResultSet cartResult = stmt.executeQuery("SELECT p.image, p.name, p.price, p.id, p.suggestedItem FROM products p " + ";");
 
+			while (cartResult.next()) {
+				String image = cartResult.getString("image");
+				String productName = cartResult.getString("name");
+				int price = cartResult.getInt("price");
+				int productID = cartResult.getInt("id");
+				int suggestedItemInt = cartResult.getInt("suggestedItem");
+				String suggestedItem = "";
+				Statement stmt2 = con.createStatement();
+				ResultSet suggestedItemResult = stmt2.executeQuery("select name from products where id = " + suggestedItemInt + ";");
 
+				if (suggestedItemResult.next()) {
+					suggestedItem = suggestedItemResult.getString("name");
+				}
+
+				if (productID != 0) {
+					shopItems.add(new ShopItem(image, productName, price, productID, suggestedItem));
+				}
+			}
+		}
+		catch (Exception e) {
+			System.out.println("Exception:" + e);
+		}
+
+		model.addAttribute("shopItems", shopItems);
 
 		return "shop";
 	}
@@ -314,7 +343,6 @@ public class UserController{
 
 	@GetMapping("deleteitem")
 	public String deleteItemFromCart(@RequestParam("productID") int productID) {
-		System.out.println("hwlooo"+ productID);
 		try {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
 			Statement stmt = con.createStatement();

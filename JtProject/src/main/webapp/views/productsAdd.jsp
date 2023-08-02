@@ -123,6 +123,10 @@
 						<img src="" hidden id="imgPreview" height="100px" width="100px"
 							 style="margin-top: 20px" >
 					</div>
+					<div class="form-group">
+						<label for="discount">Discount</label>
+						<input type="input" class="form-control border border-warning" required name="discount" min="0" step="any" placeholder="Discount">
+					</div>
 					<input type="hidden" name="imgName">
 					<p> </p>
 					<input type="submit" class="btn btn-primary">

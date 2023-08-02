@@ -97,6 +97,10 @@
 						<img src="" id="imgPreview" hidden height="100px" width="100px"
 							style="margin-top: 20px">
 					</div>
+					<div class="form-group">
+						<label for="discount">Discount</label>
+						<input type="input" class="form-control border border-success" required name="discount" value="${ pdiscount }" min="0" max="1" step="any" placeholder="Discount">
+					</div>
 					<input type="hidden" name="imgName">
 					<input type="submit" value="Update Details" class="btn btn-primary">
 				</div>
