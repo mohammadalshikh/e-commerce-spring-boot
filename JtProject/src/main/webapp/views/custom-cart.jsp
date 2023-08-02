@@ -1,4 +1,4 @@
-<%@ page import="com.jtspringproject.JtSpringProject.CartItem" %>
+<%@ page import="com.jtspringproject.JtSpringProject.CustomCartItem" %>
 <%@ page import="java.util.ArrayList" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -101,18 +101,6 @@
             text-align: center;
         }
 
-        #checkOut {
-            display: block;
-            width: 200px; /* Set the width of the button */
-            margin: 0 auto; /* Center the button horizontally */
-            padding: 10px 20px; /* Add padding to the button */
-            font-size: 18px; /* Set the font size of the button text */
-        }
-
-        #checkOut:hover {
-            color: #fff;
-        }
-
         .footer {
             background-color: #292929;
             color: #fff;
@@ -131,15 +119,6 @@
 
         .footer a:hover {
             color: #e74c3c;
-        }
-
-
-        .disabled-input {
-            background-color: transparent;
-            border: none;
-            pointer-events: none;
-            font-size: inherit;
-            color: black;
         }
 
     </style>
@@ -181,65 +160,51 @@
 
 <div class="container">
     <br><br>
-    <h1>My Cart</h1>
+    <h1>My Custom Cart</h1>
 
     <div class="d-flex justify-content-end mb-3">
         <form action="/clearcart" method="get">
             <button type="submit" id="clearCart" class="btn btn-action">Clear cart</button>
         </form>
-        <form action="/movecustomtocart" method="get">
-            <button id="add" type="submit" class="btn btn-action">Add custom cart to cart</button>
-        </form>
-            <a id="show" href="/custom-cart" class="btn btn-action">Show custom cart</a>
-            <input id="edit" type="button" value="Edit quantities" class="btn btn-action" onClick="editMode()">
-
-            <button id="confirm" hidden type="submit" form="updateQuantity" class="btn btn-action">Confirm changes</button>
-            <input hidden id="cancel" type="button" value="Cancel" class="btn btn-action" onClick="cancel()">
+        <a href="/cart" class="btn btn-action">Show cart</a>
     </div>
-    <br>
-    <form action="/updateCartItemQuantity" id="updateQuantity" method="get">
-        <table class="table" id="cartTable">
-            <thead>
-            <tr>
-                <th></th>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Total Price</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
+
+    <table class="table" id="cartTable">
+        <thead>
+        <br>
+        <tr>
+            <th>Product Name</th>
+            <th>Quantity</th>
+            <th>Total Price</th>
+            <th></th>
+        </tr>
+        <tr>
             <%-- Get the cartItems ArrayList from the Model object --%>
-            <% ArrayList<CartItem> cartItems = (ArrayList<CartItem>) request.getAttribute("cartItems"); %>
+            <% ArrayList<CustomCartItem> customCartItems = (ArrayList<CustomCartItem>) request.getAttribute("customCartItems"); %>
 
             <%-- Loop through the cart items and populate the table --%>
-            <% for (CartItem item : cartItems) { %>
-            <tr>
-                <td></td>
-                <td style="width: 250px" id="1"><%= item.getProductName() %></td>
-                <td style="width: 250px">
-                    <input pattern="[1-9][0-9]*" min="1" style="width: 80px" class="disabled-input" disabled type="number" name="<%= item.getProductID() %>|quantity" value="<%= item.getQuantity() %>">
-                    <!-- Add a hidden input to store the productID -->
-                    <input type="hidden" name="productIDs" value="<%= item.getProductID() %>">
-                </td>
-                <td style="width: 250px">$<%= item.getTotalPrice() %></td>
-                <td>
-                    <!-- Add the "Delete" button for each product -->
-                    <form action="/deleteitem" method="get">
-                        <input type="hidden" name="productID" value="<%= item.getProductID() %>">
-                        <button type="submit" class="btn btn-delete">Remove</button>
-                    </form>
-                </td>
-            </tr>
-            <% } %>
-            </tbody>
-        </table>
-    </form>
-
+            <% for (CustomCartItem item : customCartItems) { %>
+        </tr>
+        <tr>
+            <td id="1"><%= item.getProductName() %></td>
+            <td><%= item.getQuantity() %></td>
+            <td>$<%= item.getTotalPrice() %></td>
+            <td>
+                <!-- Add the "Delete" button for each product -->
+                <form action="/deletecustom" method="get">
+                    <input type="hidden" name="productID" value="<%= item.getProductID() %>">
+                    <button type="submit" class="btn btn-delete">Remove</button>
+                </form>
+            </td>
+        </tr>
+        <% } %>
+        </thead>
+        <tbody id="cartItems">
+        </tbody>
+    </table>
     <br>
-    <p class="empty-cart-message" id="emptyCartMessage">Your cart is currently empty, add some products to view them here. <br><br><a href="/shop">Go to shop page</a></p>
+    <p class="empty-cart-message" id="emptyCartMessage">Your custom cart is currently empty, add some products to view them here. <br><br><a href="/shop">Go to shop page</a></p>
     <p id="total">Total: $${total}</p>
-        <a id="checkOut" href="/buy" class="btn btn-delete">Check out</a>
 </div>
 
 <br><br>
@@ -254,47 +219,18 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 <script>
-        const cartTable = document.getElementById("cartTable");
-        const clearCartButton = document.getElementById("clearCart");
-        const emptyCartMessage = document.getElementById("emptyCartMessage");
-        const tdFirst = document.getElementById("1");
-        const total = document.getElementById('total');
-        const checkOut = document.getElementById('checkOut');
-
-        if(tdFirst == null) {
-            cartTable.style.display = 'none';
-            clearCartButton.style.display = 'none';
-            emptyCartMessage.style.display = 'block';
-            total.style.display = 'none';
-            checkOut.style.display = 'none';
-            document.getElementById("edit").hidden = true;
-        }
-
-
-        function editMode() {
-            document.getElementById("add").hidden = true;
-            document.getElementById("clearCart").hidden = true;
-            document.getElementById("show").hidden = true;
-            document.getElementById("edit").hidden = true;
-            document.getElementById("confirm").hidden = false;
-            document.getElementById("cancel").hidden = false;
-
-            const quantityInputs = document.querySelectorAll('input[name*="|quantity"]');
-
-            // Loop through each quantity input and update its attributes and styles
-            quantityInputs.forEach((input) => {
-                // Remove the "disabled" attribute from the input
-                input.removeAttribute("disabled");
-                input.classList.remove("disabled-input");
-                input.style.backgroundColor = "white";
-                input.style.border = "1px solid #ccc";
-            });
-        }
-
-
-        function cancel() {
-            location.reload();
-        }
+    const cartTable = document.getElementById("cartTable");
+    const clearCartButton = document.getElementById("clearCart");
+    const emptyCartMessage = document.getElementById("emptyCartMessage");
+    const tdFirst = document.getElementById("1");
+    const total = document.getElementById('total');
+    if(tdFirst == null) {
+        cartTable.style.display = 'none';
+        clearCartButton.style.display = 'none';
+        emptyCartMessage.style.display = 'block';
+        total.style.display = 'none';
+        checkOut.style.display = 'none';
+    }
 
 </script>
 </body>

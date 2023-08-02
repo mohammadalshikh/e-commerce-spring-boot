@@ -121,7 +121,7 @@
     <h1 class="text-center">Contact Us</h1>
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <form action="#" method="post">
+            <form action="/submitContact" method="post">
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" class="form-control" id="name" name="name" required>

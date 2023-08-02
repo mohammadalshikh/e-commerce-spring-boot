@@ -594,6 +594,35 @@ public class AdminController {
 		return runningTotal;
     }
 
+	public static float getCustomCartPrice(String username) {
+
+		// Create a variable to hold the running total
+		float runningTotal = 0;
+		try {
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject","root","12345678");
+			Statement stmt = con.createStatement();
+
+			// Select items from Cart
+			ResultSet cartItemsRst = stmt.executeQuery("SELECT productID, quantity FROM CustomCart WHERE userId = (SELECT user_id FROM users WHERE username = '" + username + "');");
+
+			// Iterate through the cart, calling getProductPrice for each item
+			while(cartItemsRst.next()) {
+				int productID= cartItemsRst.getInt("productID");
+				int quantity = cartItemsRst.getInt("quantity");
+				runningTotal += getProductPrice(productID,quantity);
+			}
+
+			if(runningTotal<0){
+				return 0;
+			}
+			return runningTotal;
+		}
+		catch(Exception e) {
+			System.out.println("Exception:" + e);
+		}
+		return runningTotal;
+	}
+
 	public static float getOrderTotal(String username) {
 
 		// Create a variable to hold the total value of the order

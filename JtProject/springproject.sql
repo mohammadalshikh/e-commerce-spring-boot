@@ -166,3 +166,5 @@ alter table users add coupons int default 0;
 update users
 set coupons = 10
 where user_id = 1;
+
+insert into CustomCart values (1, 1, 4);

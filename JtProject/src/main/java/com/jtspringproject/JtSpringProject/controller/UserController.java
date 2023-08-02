@@ -7,10 +7,27 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.*;
 
+import com.jtspringproject.JtSpringProject.CustomCartItem;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.util.Properties;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
 import com.jtspringproject.JtSpringProject.CartItem;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 public class UserController{
@@ -20,21 +37,102 @@ public class UserController{
 		UserController.usernameforclass = usernameforclass;
 	}
 
-
-	@GetMapping("/customcart")
-	public String customCart(){
-		return "customcart";
-	}
-
 	@GetMapping("/register")
 	public String registerUser()
 	{
 		return "register";
 	}
+
 	@GetMapping("/contact")
 	public String contact()
 	{
 		return "contact";
+	}
+
+	@RequestMapping(value = "submitContact", method = RequestMethod.POST )
+	public String submitContact(@RequestParam("name") String name,
+								@RequestParam("email") String email,
+								@RequestParam("subject") String subject,
+								@RequestParam("message") String message,
+								@RequestParam(value = "subscribe", required = false) boolean subscribe,
+								@RequestParam("inquiry-type") String inquiryType,
+								Model model,
+								RedirectAttributes redirectAttributes) {
+
+		// Code to send the first email to the user
+		String userMessage = "Dear " + name + ",\n\nThank you for contacting us. Your request has been received. " +
+				"Here is a summary of your message:\n\n" +
+				"Name: " + name + "\n" +
+				"Email: " + email + "\n" +
+				"Subject: " + subject + "\n" +
+				"Message: " + message + "\n" +
+				"Subscribe to newsletter: " + (subscribe ? "Yes" : "No") + "\n" +
+				"Inquiry Type: " + inquiryType + "\n\n" +
+				"We will get back to you as soon as possible.\n\nBest regards,\nThe BestFood Team";
+
+		sendEmail(email, "bestfood438@gmail.com", "Your Contact Request", userMessage);
+
+		// Code to send the second email to the admin email
+		String adminMessage = "A new contact request has been submitted:\n\n" +
+				"Name: " + name + "\n" +
+				"Email: " + email + "\n" +
+				"Subject: " + subject + "\n" +
+				"Message: " + message + "\n" +
+				"Subscribe to newsletter: " + (subscribe ? "Yes" : "No") + "\n" +
+				"Inquiry Type: " + inquiryType + "\n";
+
+		sendEmail("bestfood438@gmail.com", email, "New Contact Request", adminMessage);
+
+		// Add a success message to be shown to the user
+		redirectAttributes.addFlashAttribute("successMessage", "Your contact request has been submitted successfully!");
+
+		// Redirect to the contact page
+		return "redirect:/contact";
+	}
+
+	// Helper method to send emails using JavaMail API
+	private void sendEmail(String recipient, String sender, String subject, String body) {
+		// SMTP server configuration
+		String host = "smtp.gmail.com"; // Replace with your SMTP server host
+		String port = "587"; // Replace with your SMTP server port (usually 587 for TLS)
+		String username = "bestfood438@gmail.com"; // Replace with your SMTP username (if authentication is required)
+		String password = "niwmagtnrxcdcehq"; // Replace with your SMTP password (if authentication is required)
+
+
+		// Create properties for the mail session
+		Properties props = new Properties();
+		props.put("mail.smtp.host", host);
+		props.put("mail.smtp.port", port);
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true"); // For TLS
+
+		// Create a session with authentication
+		Session session = Session.getInstance(props, new Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(username, password);
+			}
+		});
+
+		try {
+			// Create a new MimeMessage
+			Message message = new MimeMessage(session);
+
+			// Set the sender and recipient addresses
+			message.setFrom(new InternetAddress(sender));
+			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
+
+			// Set the email subject and body
+			message.setSubject(subject);
+			message.setText(body);
+
+			// Send the email
+			Transport.send(message);
+
+			System.out.println("Email sent successfully to " + recipient);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+			System.err.println("Failed to send email to " + recipient);
+		}
 	}
 
 	@GetMapping("/buy")
@@ -240,7 +338,7 @@ public class UserController{
 		} catch (Exception e) {
 			System.out.println("Exception:" + e);
 		}
-		return "redirect:/customCart";
+		return "redirect:/custom-cart";
 	}
 
 
@@ -415,6 +513,57 @@ public class UserController{
 		model.addAttribute("total", AdminController.getCartPrice(usernameforclass));
 
 		return "cart";
+	}
+
+	@GetMapping("updateCartItemQuantity")
+	public String updateCartItemQuantity(@RequestParam MultiValueMap<String, String> params) {
+		for (String key : params.keySet()) {
+			if (key.matches(".+\\|quantity")) {
+					String productIDString = key.substring(0, key.indexOf('|'));
+					String quantityString = params.getFirst(key);
+					int productID;
+					int quantity;
+					productID = Integer.parseInt(productIDString);
+					quantity = Integer.parseInt(quantityString);
+					addItemToCart(productID, quantity);
+			}
+		}
+
+		return "redirect:/cart";
+	}
+
+	@GetMapping("/custom-cart")
+	public String viewCustomCart(Model model) {
+		ArrayList<CustomCartItem> customCartItems = new ArrayList<>();
+		try {
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/springproject", "root", "12345678");
+			Statement stmt = con.createStatement();
+			ResultSet cartResult = stmt.executeQuery("SELECT p.name, c.quantity, p.price, c.productID FROM CustomCart c " +
+					"JOIN products p ON c.productID = p.id " +
+					"WHERE c.userID = " + AdminController.getUserID() + ";");
+
+			double subTotal = 0;
+
+			while (cartResult.next()) {
+				int quantity = cartResult.getInt("quantity");
+				String productName = cartResult.getString("name");
+				float productPrice = cartResult.getFloat("price");
+				int productID = cartResult.getInt("productID");
+				float totalPrice = AdminController.getProductPrice(productID, quantity);
+
+				if (productID != 0) {
+					customCartItems.add(new CustomCartItem(productName, quantity, totalPrice, productID));
+				}
+			}
+		}
+		catch (Exception e) {
+			System.out.println("Exception:" + e);
+		}
+
+		model.addAttribute("customCartItems", customCartItems);
+		model.addAttribute("total", AdminController.getCustomCartPrice(usernameforclass));
+
+		return "custom-cart";
 	}
 
 }
