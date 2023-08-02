@@ -462,21 +462,21 @@ public class AdminController {
 				pst.setDouble(8, discount);
 				int i = pst.executeUpdate();
 
-
 				// Get id of newly added product
 				ResultSet getItemIDRst = stmt.executeQuery("SELECT id FROM products WHERE name = '" + name + "';");
-				int itemID = getItemIDRst.getInt("id");
+				int itemID = 0;
+				if(getItemIDRst.next()) {
+					itemID = getItemIDRst.getInt("id");
+				}
 
 				// Add newly added product as tuple in ProductMatrix
-				PreparedStatement addToPMRowPst = con.prepareStatement("INSERT INTO ProductMatrix (product) VALUES (?);");
-				addToPMRowPst.setInt(1, itemID);
-				addToPMRowPst.executeUpdate();
+				Statement stmt2 = con.createStatement();
+				stmt2.executeUpdate("INSERT INTO ProductMatrix (product) VALUES (" + itemID + ");");
 
 				// Add newly added product as attribute in ProductMatrix
-				PreparedStatement addToPMColumnPst = con.prepareStatement("ALTER TABLE ProductMatrix ADD '?' int default 0;");
 				String productName = "p" + itemID;
-				addToPMColumnPst.setString(1, productName);
-				addToPMColumnPst.executeUpdate();
+				Statement stmt3 = con.createStatement();
+				stmt3.executeUpdate("ALTER TABLE ProductMatrix ADD " + productName + " int default 0;");
 			}
 		} catch (Exception e) {
 			System.out.println("Exception:" + e);

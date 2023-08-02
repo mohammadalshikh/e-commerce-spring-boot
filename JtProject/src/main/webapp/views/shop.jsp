@@ -148,7 +148,7 @@
             <% for (ShopItem item : shopItems) { %>
             <div class="col-md-4">
                 <div class="restaurant-item">
-                    <img src="<%= item.getImage() %>" alt="Watermelon">
+                    <img src="<%= item.getImage() %>" alt="<%= item.getProductName() %>">
                     <div class="container">
                         <br>
                         <h4><%= item.getProductName() %> - <%= item.getPrice() %>$</h4>

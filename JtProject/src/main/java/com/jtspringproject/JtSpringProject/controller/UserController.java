@@ -57,7 +57,7 @@ public class UserController{
 			while (cartResult.next()) {
 				String image = cartResult.getString("image");
 				String productName = cartResult.getString("name");
-				int price = cartResult.getInt("price");
+				float price = cartResult.getFloat("price");
 				int productID = cartResult.getInt("id");
 				int suggestedItemInt = cartResult.getInt("suggestedItem");
 				String suggestedItem = "";

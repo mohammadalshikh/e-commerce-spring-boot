@@ -4,12 +4,11 @@ public class ShopItem {
 
     private String image;
     private String productName;
-    private int price;
+    private float price;
     private int productID;
-
     private String suggestedItem;
 
-    public ShopItem(String image, String productName, int price, int productID, String suggestedItem) {
+    public ShopItem(String image, String productName, float price, int productID, String suggestedItem) {
         this.image = image;
         this.productName = productName;
         this.price = price;
@@ -25,7 +24,7 @@ public class ShopItem {
         return image;
     }
 
-    public int getPrice() {
+    public float getPrice() {
         return price;
     }
 

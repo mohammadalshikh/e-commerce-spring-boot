@@ -241,10 +241,10 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="restaurant-item">
-                    <img src="https://assets.stickpng.com/thumbs/5a02130a18e87004f1ca437d.png" alt="Banana">
+                    <img src="https://clipart-library.com/image_gallery2/Banana.png" alt="Banana">
                     <div class="container">
                         <br>
-                        <h4>Banana - 2$</h4>
+                        <h4>Banana - 2.0$</h4>
                         <form action="/addtocart" method="get" id="ac1">
                             <input hidden type="number" name="productID" value="6">
                             <input hidden type="number" name="quantity" value="1">
@@ -267,7 +267,7 @@
                 <div class="restaurant-item">
                     <img src="https://clipart-library.com/images_k/orange-transparent-background/orange-transparent-background-2.png" alt="Orange">
                     <br><br>
-                    <h4>Orange - 3$</h4>
+                    <h4>Orange - 3.0$</h4>
                     <form action="/addtocart" method="get" id="ac2">
                         <input hidden type="number" name="productID" value="1">
                         <input hidden type="number" name="quantity" value="1">
@@ -289,7 +289,7 @@
                 <div class="restaurant-item">
                     <img src="https://clipart-library.com/new_gallery/44-444830_share-this-article-watermelon-png.png" alt="Watermelon">
                     <br><br>
-                    <h4>Watermelon - 10$</h4>
+                    <h4>Watermelon - 10.0$</h4>
                     <form action="/addtocart" method="get" id="ac3">
                         <input hidden type="number" name="productID" value="5">
                         <input hidden type="number" name="quantity" value="1">
@@ -343,7 +343,8 @@
                 'Cucumber',
                 'Watermelon',
                 'Potato',
-                'Onion'
+                'Onion',
+                'Cantaloupe'
             ];
 
             const filteredResults = sampleResults.filter(result => result.toLowerCase().includes(query.toLowerCase()));
