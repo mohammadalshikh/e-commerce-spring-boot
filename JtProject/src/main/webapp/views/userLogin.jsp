@@ -76,15 +76,6 @@
             background-color: #D91E18;
         }
 
-        .register-container {
-            max-width: 400px;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 30px;
-            border-radius: 10px;
-            position: relative;
-            display: none;
-        }
-
         .register-container h2 {
             text-align: center;
             margin-bottom: 30px;
@@ -172,21 +163,26 @@
         <h2>User Login</h2>
         <form action="userloginvalidate" method="post">
             <div class="form-group">
-                <input type="text" name="username" id="username" placeholder="Username" required class="form-control form-control-lg">
+                <input type="text" name="username" id="username" placeholder="Username" required
+                       class="form-control form-control-lg">
             </div>
             <div class="form-group">
-                <input type="password" class="form-control form-control-lg" placeholder="Password" required name="password" id="password">
+                <input type="password" class="form-control form-control-lg" placeholder="Password" required
+                       name="password" id="password">
             </div>
             <p class="error-message">${failMessage}</p>
-            <button type="submit" class="btn btn-login">Log in</button><br><br>
-            <span>Don't have an account? <a class="linkControl" href="#" data-toggle="modal" data-target="#registrationModal">Register here</a></span>
+            <button type="submit" class="btn btn-login">Log in</button>
+            <br><br>
+            <span>Don't have an account? <a class="linkControl" href="#" data-toggle="modal"
+                                            data-target="#registrationModal">Register here</a></span>
             <br>
             <span>Admin login page from <a class="linkControl" href="/admin">here</a></span>
         </form>
     </div>
 
 
-    <div class="modal fade" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
+    <div class="modal fade" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -198,27 +194,38 @@
                 <div class="modal-body">
                     <form action="newuserregister" method="post" class="registration-form" id="registrationForm">
                         <div class="form-group">
-                            <label for="email" style="display: block; width: 100%; text-align: left;">Email address</label>
-                            <input type="email" class="form-control form-control-lg" required minlength="6" required name="email" id="email"
+                            <label for="email" style="display: block; width: 100%; text-align: left;">Email
+                                address</label>
+                            <input type="email" class="form-control form-control-lg" required minlength="6" required
+                                   name="email" id="email"
                                    aria-describedby="emailHelp" oninput="validateEmail()">
                             <div class="text-left"><span id="emailError" class="error-message"></span></div>
                         </div>
                         <div class="form-group">
-                            <label for="firstName" style="display: block; width: 100%; text-align: left;">Username</label>
-                            <input type="text" name="username" id="firstName" required class="form-control form-control-lg" oninput="validateUsername()">
+                            <label for="firstName"
+                                   style="display: block; width: 100%; text-align: left;">Username</label>
+                            <input type="text" name="username" id="firstName" required
+                                   class="form-control form-control-lg" oninput="validateUsername()">
                             <div class="text-left"><span id="usernameError" class="error-message"></span></div>
                         </div>
                         <div class="form-group">
-                            <label for="passwordd" style="display: block; width: 100%; text-align: left;">Password</label>
-                            <input type="password" class="form-control form-control-lg"  required name="password"
-                                   id="passwordd" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*?[~`!@#$%\^&*()\-_=+[\]{};:\x27.,\x22\\|/?><]).{8,}" title="Must contain: at least one number, one uppercase letter, one lowercase letter, one special character, and 8 or more characters" required>
-                            <div style="margin-right: 70%;"><input type="checkbox" onclick="showPassword()"> <p style="display: inline;">Show password</p></div>
+                            <label for="passwordd"
+                                   style="display: block; width: 100%; text-align: left;">Password</label>
+                            <input type="password" class="form-control form-control-lg" required name="password"
+                                   id="passwordd"
+                                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*?[~`!@#$%\^&*()\-_=+[\]{};:\x27.,\x22\\|/?><]).{8,}"
+                                   title="Must contain: at least one number, one uppercase letter, one lowercase letter, one special character, and 8 or more characters"
+                                   required>
+                            <div style="margin-right: 70%;"><input type="checkbox" onclick="showPassword()">
+                                <p style="display: inline;">Show password</p></div>
                         </div>
                         <div id="opt" class="form-group">
                             <label for="address" style="display: block; width: 100%; text-align: left;">Address</label>
-                            <input class="form-control form-control-lg" rows="3" id="address" placeholder="Optional" name="address"></input>
+                            <input class="form-control form-control-lg" rows="3" id="address" placeholder="Optional"
+                                   name="address"></input>
                         </div>
-                        <input id="submitBtn" type="submit" disabled value="Register" class="btn btn-danger btn-block"><br>
+                        <input id="submitBtn" type="submit" disabled value="Register"
+                               class="btn btn-danger btn-block"><br>
                     </form>
                 </div>
             </div>
@@ -240,6 +247,7 @@
             registrationForm.style.display = 'block';
         }
     }
+
     function showPassword() {
         var x = document.getElementById("passwordd");
         if (x.type === "password") {
@@ -248,11 +256,12 @@
             x.type = "password";
         }
     }
+
     function checkUsernameAvailability(username) {
         return $.ajax({
             type: "GET",
             url: "/checkUsernameAvailability",
-            data: { username: username },
+            data: {username: username},
         });
     }
 
@@ -260,7 +269,7 @@
         return $.ajax({
             type: "GET",
             url: "/checkEmailAvailability",
-            data: { email: email },
+            data: {email: email},
         });
     }
 

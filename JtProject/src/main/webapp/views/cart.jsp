@@ -190,11 +190,11 @@
         <form action="/movecustomtocart" method="get">
             <button id="add" type="submit" class="btn btn-action">Add custom cart to cart</button>
         </form>
-            <a id="show" href="/custom-cart" class="btn btn-action">Show custom cart</a>
-            <input id="edit" type="button" value="Edit quantities" class="btn btn-action" onClick="editMode()">
+        <a id="show" href="/custom-cart" class="btn btn-action">Show custom cart</a>
+        <input id="edit" type="button" value="Edit quantities" class="btn btn-action" onClick="editMode()">
 
-            <button id="confirm" hidden type="submit" form="updateQuantity" class="btn btn-action">Confirm changes</button>
-            <input hidden id="cancel" type="button" value="Cancel" class="btn btn-action" onClick="cancel()">
+        <button id="confirm" hidden type="submit" form="updateQuantity" class="btn btn-action">Confirm changes</button>
+        <input hidden id="cancel" type="button" value="Cancel" class="btn btn-action" onClick="cancel()">
     </div>
     <br>
     <form action="/updateCartItemQuantity" id="updateQuantity" method="get">
@@ -216,13 +216,16 @@
             <% for (CartItem item : cartItems) { %>
             <tr>
                 <td></td>
-                <td style="width: 250px" id="1"><%= item.getProductName() %></td>
+                <td style="width: 250px" id="1"><%= item.getProductName() %>
+                </td>
                 <td style="width: 250px">
-                    <input pattern="[1-9][0-9]*" min="1" style="width: 80px" class="disabled-input" disabled type="number" name="<%= item.getProductID() %>|quantity" value="<%= item.getQuantity() %>">
+                    <input pattern="[1-9][0-9]*" min="1" style="width: 80px" class="disabled-input" disabled
+                           type="number" name="<%= item.getProductID() %>|quantity" value="<%= item.getQuantity() %>">
                     <!-- Add a hidden input to store the productID -->
                     <input type="hidden" name="productIDs" value="<%= item.getProductID() %>">
                 </td>
-                <td style="width: 250px">$<%= item.getTotalPrice() %></td>
+                <td style="width: 250px">$<%= item.getTotalPrice() %>
+                </td>
                 <td>
                     <form action="/deleteitem" method="get">
                         <input type="hidden" name="productID" value="<%= item.getProductID() %>">
@@ -236,9 +239,10 @@
     </form>
 
     <br>
-    <p class="empty-cart-message" id="emptyCartMessage">Your cart is currently empty, add some products to view them here. <br><br><a href="/shop">Go to shop page</a></p>
+    <p class="empty-cart-message" id="emptyCartMessage">Your cart is currently empty, add some products to view them
+        here. <br><br><a href="/shop">Go to shop page</a></p>
     <p id="total">Total: $${total}</p>
-        <a id="checkOut" href="/buy" class="btn btn-delete">Check out</a>
+    <a id="checkOut" href="/buy" class="btn btn-delete">Check out</a>
 </div>
 
 <br><br>
@@ -253,46 +257,46 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 <script>
-        const cartTable = document.getElementById("cartTable");
-        const clearCartButton = document.getElementById("clearCart");
-        const emptyCartMessage = document.getElementById("emptyCartMessage");
-        const tdFirst = document.getElementById("1");
-        const total = document.getElementById('total');
-        const checkOut = document.getElementById('checkOut');
+    const cartTable = document.getElementById("cartTable");
+    const clearCartButton = document.getElementById("clearCart");
+    const emptyCartMessage = document.getElementById("emptyCartMessage");
+    const tdFirst = document.getElementById("1");
+    const total = document.getElementById('total');
+    const checkOut = document.getElementById('checkOut');
 
-        if(tdFirst == null) {
-            cartTable.style.display = 'none';
-            clearCartButton.style.display = 'none';
-            emptyCartMessage.style.display = 'block';
-            total.style.display = 'none';
-            checkOut.style.display = 'none';
-            document.getElementById("edit").hidden = true;
-        }
+    if (tdFirst == null) {
+        cartTable.style.display = 'none';
+        clearCartButton.style.display = 'none';
+        emptyCartMessage.style.display = 'block';
+        total.style.display = 'none';
+        checkOut.style.display = 'none';
+        document.getElementById("edit").hidden = true;
+    }
 
-        function editMode() {
-            document.getElementById("add").hidden = true;
-            document.getElementById("clearCart").hidden = true;
-            document.getElementById("show").hidden = true;
-            document.getElementById("edit").hidden = true;
-            document.getElementById("confirm").hidden = false;
-            document.getElementById("cancel").hidden = false;
+    function editMode() {
+        document.getElementById("add").hidden = true;
+        document.getElementById("clearCart").hidden = true;
+        document.getElementById("show").hidden = true;
+        document.getElementById("edit").hidden = true;
+        document.getElementById("confirm").hidden = false;
+        document.getElementById("cancel").hidden = false;
 
-            const quantityInputs = document.querySelectorAll('input[name*="|quantity"]');
+        const quantityInputs = document.querySelectorAll('input[name*="|quantity"]');
 
-            // Loop through each quantity input and update its attributes and styles
-            quantityInputs.forEach((input) => {
-                // Remove the "disabled" attribute from the input
-                input.removeAttribute("disabled");
-                input.classList.remove("disabled-input");
-                input.style.backgroundColor = "white";
-                input.style.border = "1px solid #ccc";
-            });
-        }
+        // Loop through each quantity input and update its attributes and styles
+        quantityInputs.forEach((input) => {
+            // Remove the "disabled" attribute from the input
+            input.removeAttribute("disabled");
+            input.classList.remove("disabled-input");
+            input.style.backgroundColor = "white";
+            input.style.border = "1px solid #ccc";
+        });
+    }
 
 
-        function cancel() {
-            location.reload();
-        }
+    function cancel() {
+        location.reload();
+    }
 
 </script>
 </body>

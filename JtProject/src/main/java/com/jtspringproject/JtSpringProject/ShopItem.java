@@ -28,7 +28,11 @@ public class ShopItem {
         return price;
     }
 
-    public int getProductID() {return productID;}
+    public int getProductID() {
+        return productID;
+    }
 
-    public String getSuggestedItem() {return suggestedItem;}
+    public String getSuggestedItem() {
+        return suggestedItem;
+    }
 }

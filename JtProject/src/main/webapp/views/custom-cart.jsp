@@ -200,13 +200,16 @@
             <% for (CustomCartItem item : cartItems) { %>
             <tr>
                 <td></td>
-                <td style="width: 250px" id="1"><%= item.getProductName() %></td>
+                <td style="width: 250px" id="1"><%= item.getProductName() %>
+                </td>
                 <td style="width: 250px">
-                    <input pattern="[1-9][0-9]*" min="1" style="width: 80px" class="disabled-input" disabled type="number" name="<%= item.getProductID() %>|quantity" value="<%= item.getQuantity() %>">
+                    <input pattern="[1-9][0-9]*" min="1" style="width: 80px" class="disabled-input" disabled
+                           type="number" name="<%= item.getProductID() %>|quantity" value="<%= item.getQuantity() %>">
                     <!-- Add a hidden input to store the productID -->
                     <input type="hidden" name="productIDs" value="<%= item.getProductID() %>">
                 </td>
-                <td style="width: 250px">$<%= item.getTotalPrice() %></td>
+                <td style="width: 250px">$<%= item.getTotalPrice() %>
+                </td>
                 <td>
                     <!-- Add the "Delete" button for each product -->
                     <form action="/deletecustom" method="get">
@@ -220,7 +223,8 @@
         </table>
     </form>
     <br>
-    <p class="empty-cart-message" id="emptyCartMessage">Your cart is currently empty, add some products to view them here. <br><br><a href="/shop">Go to shop page</a></p>
+    <p class="empty-cart-message" id="emptyCartMessage">Your cart is currently empty, add some products to view them
+        here. <br><br><a href="/shop">Go to shop page</a></p>
     <p id="total">Total: $${total}</p>
 </div>
 
@@ -242,7 +246,7 @@
     const tdFirst = document.getElementById("1");
     const total = document.getElementById('total');
 
-    if(tdFirst == null) {
+    if (tdFirst == null) {
         cartTable.style.display = 'none';
         clearCartButton.style.display = 'none';
         emptyCartMessage.style.display = 'block';

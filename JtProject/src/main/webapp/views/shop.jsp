@@ -156,7 +156,8 @@
                         <form action="/addtocart" method="get" id="<%= item.getProductID() %>|ac">
                             <input hidden type="number" name="productID" value="<%= item.getProductID() %>">
                             <input hidden type="number" name="quantity" value="1">
-                            <button style="background-color: #E74B3C; border-color: #E74B3C;" type="submit" class="btn btn-primary btn-lg">
+                            <button style="background-color: #E74B3C; border-color: #E74B3C;" type="submit"
+                                    class="btn btn-primary btn-lg">
                                 <i class="fas fa-shopping-cart"></i> Add to Cart
                             </button>
                         </form>
@@ -164,7 +165,8 @@
                         <form action="/addtocustomcart" method="get" id="<%= item.getProductID() %>|acc">
                             <input hidden type="number" name="productID" value="<%= item.getProductID() %>">
                             <input hidden type="number" name="quantity" value="1">
-                            <button style="background-color: #027BFF; font-size: 14px;" type="submit" class="btn btn-primary btn-lg">
+                            <button style="background-color: #027BFF; font-size: 14px;" type="submit"
+                                    class="btn btn-primary btn-lg">
                                 <i class="fas fa-shopping-cart"></i> Add to Custom Cart
                             </button>
                         </form>

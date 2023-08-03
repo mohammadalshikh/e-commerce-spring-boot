@@ -127,8 +127,10 @@
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" class="form-control form-control-lg" required placeholder="Password*" value="${password }" required name="password"
-                       id="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*?[~`!@#$%\^&*()\-_=+[\]{};:\x27.,\x22\\|/?><]).{8,}"
+                <input type="password" class="form-control form-control-lg" required placeholder="Password*"
+                       value="${password }" required name="password"
+                       id="password"
+                       pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*?[~`!@#$%\^&*()\-_=+[\]{};:\x27.,\x22\\|/?><]).{8,}"
                        title="Must contain: at least one number, one uppercase letter, one lowercase letter,
                        one special character, and 8 or more characters" required>
                 <input type="checkbox" onclick="showPassword()"> Show password
@@ -160,7 +162,8 @@
     </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"</script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+</script>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 

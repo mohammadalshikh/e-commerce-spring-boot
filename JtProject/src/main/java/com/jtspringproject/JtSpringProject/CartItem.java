@@ -16,11 +16,16 @@ public class CartItem {
     public String getProductName() {
         return productName;
     }
+
     public int getQuantity() {
         return quantity;
     }
+
     public float getTotalPrice() {
         return totalPrice;
     }
-    public int getProductID() {return productID;}
+
+    public int getProductID() {
+        return productID;
+    }
 }

@@ -248,7 +248,8 @@
                         <form action="/addtocart" method="get" id="ac1">
                             <input hidden type="number" name="productID" value="6">
                             <input hidden type="number" name="quantity" value="1">
-                            <button style="background-color: #E74B3C; border-color: #E74B3C;" type="submit" class="btn btn-primary btn-lg">
+                            <button style="background-color: #E74B3C; border-color: #E74B3C;" type="submit"
+                                    class="btn btn-primary btn-lg">
                                 <i class="fas fa-shopping-cart"></i> Add to Cart
                             </button>
                         </form>
@@ -256,7 +257,8 @@
                         <form action="/addtocustomcart" method="get" id="acc1">
                             <input hidden type="number" name="productID" value="6">
                             <input hidden type="number" name="quantity" value="1">
-                            <button style="background-color: #027BFF; font-size: 14px;" type="submit" class="btn btn-primary btn-lg">
+                            <button style="background-color: #027BFF; font-size: 14px;" type="submit"
+                                    class="btn btn-primary btn-lg">
                                 <i class="fas fa-shopping-cart"></i> Add to Custom Cart
                             </button>
                         </form>
@@ -265,13 +267,15 @@
             </div>
             <div class="col-md-4">
                 <div class="restaurant-item">
-                    <img src="https://clipart-library.com/images_k/orange-transparent-background/orange-transparent-background-2.png" alt="Orange">
+                    <img src="https://clipart-library.com/images_k/orange-transparent-background/orange-transparent-background-2.png"
+                         alt="Orange">
                     <br><br>
                     <h4>Orange - 3.0$</h4>
                     <form action="/addtocart" method="get" id="ac2">
                         <input hidden type="number" name="productID" value="1">
                         <input hidden type="number" name="quantity" value="1">
-                        <button style="background-color: #E74B3C; border-color: #E74B3C;" type="submit" class="btn btn-primary btn-lg">
+                        <button style="background-color: #E74B3C; border-color: #E74B3C;" type="submit"
+                                class="btn btn-primary btn-lg">
                             <i class="fas fa-shopping-cart"></i> Add to Cart
                         </button>
                     </form>
@@ -279,7 +283,8 @@
                     <form action="/addtocustomcart" method="get" id="acc2">
                         <input hidden type="number" name="productID" value="1">
                         <input hidden type="number" name="quantity" value="1">
-                        <button style="background-color: #027BFF; font-size: 14px;" type="submit" class="btn btn-primary btn-lg">
+                        <button style="background-color: #027BFF; font-size: 14px;" type="submit"
+                                class="btn btn-primary btn-lg">
                             <i class="fas fa-shopping-cart"></i> Add to Custom Cart
                         </button>
                     </form>
@@ -287,13 +292,15 @@
             </div>
             <div class="col-md-4">
                 <div class="restaurant-item">
-                    <img src="https://clipart-library.com/new_gallery/44-444830_share-this-article-watermelon-png.png" alt="Watermelon">
+                    <img src="https://clipart-library.com/new_gallery/44-444830_share-this-article-watermelon-png.png"
+                         alt="Watermelon">
                     <br><br>
                     <h4>Watermelon - 10.0$</h4>
                     <form action="/addtocart" method="get" id="ac3">
                         <input hidden type="number" name="productID" value="5">
                         <input hidden type="number" name="quantity" value="1">
-                        <button style="background-color: #E74B3C; border-color: #E74B3C;" type="submit" class="btn btn-primary btn-lg">
+                        <button style="background-color: #E74B3C; border-color: #E74B3C;" type="submit"
+                                class="btn btn-primary btn-lg">
                             <i class="fas fa-shopping-cart"></i> Add to Cart
                         </button>
                     </form>
@@ -301,7 +308,8 @@
                     <form action="/addtocustomcart" method="get" id="acc3">
                         <input hidden type="number" name="productID" value="5">
                         <input hidden type="number" name="quantity" value="1">
-                        <button style="background-color: #027BFF; font-size: 14px;" type="submit" class="btn btn-primary btn-lg">
+                        <button style="background-color: #027BFF; font-size: 14px;" type="submit"
+                                class="btn btn-primary btn-lg">
                             <i class="fas fa-shopping-cart"></i> Add to Custom Cart
                         </button>
                     </form>

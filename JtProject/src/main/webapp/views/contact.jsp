@@ -115,7 +115,9 @@
     </nav>
 </div>
 <div class="container py-5">
-    <div>  <img src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1748&q=80" alt="Contact Us" class="img-contact">
+    <div><img
+            src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1748&q=80"
+            alt="Contact Us" class="img-contact">
     </div>
     <br>
     <h1 class="text-center">Contact Us</h1>
@@ -165,7 +167,7 @@
         <a href="/contact">Contact Us</a>
     </div>
 </footer>
-<!-- Bootstrap JS and jQuery-->
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 
