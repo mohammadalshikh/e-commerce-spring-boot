@@ -141,7 +141,7 @@
         <br>
         <H4 style="white-space: nowrap">Shipping & Handling: FREE</H4>
         <br>
-        <H4>Total before tax: $${total}</H4>
+        <H4>Total after tax: $${totalAfterTexesNoCoup}</H4>
         <br>
         <H4>-------------------</H4>
         <br> <br>

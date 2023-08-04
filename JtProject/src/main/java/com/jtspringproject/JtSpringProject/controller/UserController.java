@@ -173,6 +173,7 @@ public class UserController {
         }
         model.addAttribute("total", AdminController.getCartPrice(usernameforclass));
         model.addAttribute("orderTotal", AdminController.getOrderTotal(usernameforclass));
+        model.addAttribute("totalAfterTexesNoCoup", AdminController.getTotalAfterTexesNoCoup(usernameforclass));
         model.addAttribute("couponsForUser", AdminController.getCouponsForUser(usernameforclass));
         model.addAttribute("couponsApplied", AdminController.getCouponsApplied(usernameforclass));
 

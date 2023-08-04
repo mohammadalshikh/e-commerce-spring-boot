@@ -597,6 +597,13 @@ public class AdminController {
         return runningTotal;
     }
 
+    public static float getTotalAfterTexesNoCoup(String username) {
+
+        double cartPrice = getCartPrice(username);
+        float totalAfterTexesNoCoup = (float) (cartPrice * 1.15);
+
+        return totalAfterTexesNoCoup;
+    }
     public static float getOrderTotal(String username) {
 
         // Create a variable to hold the total value of the order
