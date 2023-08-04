@@ -1,6 +1,7 @@
-package com.jtspringproject.JtSpringProject;
+package com.jtspringproject.JtSpringProject.unit_tests;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+import com.jtspringproject.JtSpringProject.CustomCartItem;
 
 public class CustomCartItemTest {
 

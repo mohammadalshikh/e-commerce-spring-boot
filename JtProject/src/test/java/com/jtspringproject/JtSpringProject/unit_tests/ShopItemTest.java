@@ -1,5 +1,5 @@
-package com.jtspringproject.JtSpringProject;
-
+package com.jtspringproject.JtSpringProject.unit_tests;
+import com.jtspringproject.JtSpringProject.ShopItem;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -10,7 +10,7 @@ public class ShopItemTest {
     public void testShopItem() {
         String image = "item.jpg";
         String productName = "Product 1";
-        int price = 50;
+        float price = 50.0F;
         int productID = 101;
         String suggestedItem = "Suggested Product";
 
@@ -18,7 +18,7 @@ public class ShopItemTest {
 
         assertEquals(image, shopItem.getImage());
         assertEquals(productName, shopItem.getProductName());
-        assertEquals(price, shopItem.getPrice());
+        assertEquals(price, shopItem.getPrice(), 0.1);
         assertEquals(productID, shopItem.getProductID());
         assertEquals(suggestedItem, shopItem.getSuggestedItem());
     }
@@ -27,7 +27,7 @@ public class ShopItemTest {
     public void testGettersWithDifferentValues() {
         String image = "other_item.jpg";
         String productName = "Product 2";
-        int price = 25;
+        float price = 25F;
         int productID = 102;
         String suggestedItem = "Other Suggested Product";
 
@@ -35,7 +35,7 @@ public class ShopItemTest {
 
         assertEquals(image, shopItem.getImage());
         assertEquals(productName, shopItem.getProductName());
-        assertEquals(price, shopItem.getPrice());
+        assertEquals(price, shopItem.getPrice(), 0.1);
         assertEquals(productID, shopItem.getProductID());
         assertEquals(suggestedItem, shopItem.getSuggestedItem());
     }
