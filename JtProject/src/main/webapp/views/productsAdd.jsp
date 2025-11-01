@@ -1,5 +1,6 @@
 <!doctype html>
-<%@page import="java.sql.*" %>
+<%@page import="com.jtspringproject.JtSpringProject.model.Category" %>
+<%@page import="java.util.*" %>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -50,26 +51,13 @@
         <div class="row">
             <div class="col-sm-5">
                 <%
-                    try {
-                        String url = "jdbc:mysql://localhost:3306/springproject";
-                        Class.forName("com.mysql.cj.jdbc.Driver");
-                        Connection con = DriverManager.getConnection(url, "root", "12345678");
-                        Statement stmt = con.createStatement();
-                        ResultSet rs = stmt.executeQuery("select * from products order by id desc");
+                    Integer nextId = (Integer) request.getAttribute("nextProductId");
+                    List<Category> categoryList = (List<Category>) request.getAttribute("categories");
                 %>
                 <div class="form-group">
-                    <%
-                        if (rs.next()) {
-                    %>
                     <label for="name">Id</label>
                     <input type="number" readonly="readonly" class="form-control border border-warning" name="id"
-                           value="<%=rs.getInt(1) + 1%>">
-
-                    <%
-                        }
-                    %>
-
-
+                           value="<%= nextId != null ? nextId : 1 %>">
                 </div>
                 <div class="form-group">
                     <label for="name">Name</label>
@@ -78,25 +66,19 @@
                 </div>
 
                 <div class="form-group">
-
                     <label for="category">Select Category</label>
                     <select class="form-control border border-warning" name="categoryid" required>
                         <%
-                            rs = stmt.executeQuery("select * from categories");
-                            while (rs.next()) {
+                            if (categoryList != null) {
+                                for (Category category : categoryList) {
                         %>
-                        <option><%= rs.getString(2) %>
-                        </option>
+                        <option><%= category.getName() %></option>
                         <%
+                                }
                             }
                         %>
                     </select>
                 </div>
-                <%
-                    } catch (Exception e) {
-                        System.out.println("Exception: " + e);
-                    }
-                %>
                 <div class="form-group">
                     <label for="price">Price</label>
                     <input type="number" class="form-control border border-warning" required name="price" min="1"

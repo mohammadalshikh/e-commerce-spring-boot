@@ -1,4 +1,5 @@
-<%@page import="java.sql.*" %>
+<%@page import="com.jtspringproject.JtSpringProject.model.Product" %>
+<%@page import="com.jtspringproject.JtSpringProject.model.Category" %>
 <%@page import="java.util.*" %>
 <%@page import="java.text.*" %>
 <!doctype html>
@@ -73,51 +74,28 @@
 
         </tr>
         <tbody>
+        <%
+            List<Product> productList = (List<Product>) request.getAttribute("products");
+            List<Category> categoryList = (List<Category>) request.getAttribute("categories");
+            Map<Integer, String> categoryMap = new HashMap<>();
+            if (categoryList != null) {
+                for (Category cat : categoryList) {
+                    categoryMap.put(cat.getCategoryId(), cat.getName());
+                }
+            }
+
+            if (productList != null) {
+                for (Product product : productList) {
+        %>
         <tr>
-
-            <%
-                try {
-                    String url = "jdbc:mysql://localhost:3306/springproject";
-                    Class.forName("com.mysql.cj.jdbc.Driver");
-                    Connection con = DriverManager.getConnection(url, "root", "12345678");
-                    Statement stmt = con.createStatement();
-                    Statement stmt2 = con.createStatement();
-                    ResultSet rs = stmt.executeQuery("select * from products");
-            %>
-            <%
-                while (rs.next()) {
-            %>
-            <td>
-                <%= rs.getInt(1) %>
-            </td>
-            <td>
-                <%= rs.getString(2) %>
-            </td>
-            <td>
-                <%
-                    int categoryid = rs.getInt(4);
-                    ResultSet rs2 = stmt2.executeQuery("select * from categories where categoryid = " + categoryid + ";");
-                    if (rs2.next()) {
-                        out.print(rs2.getString(2));
-                    }
-                %>
-
-            </td>
-            <td><img
-                    src="https://th.bing.com/th/id/R.fd048601910e87d09c670b696ed153a0?rik=MCuRFnBGgWZPjA&riu=http%3a%2f%2fimages2.fanpop.com%2fimages%2fphotos%2f7300000%2fSlice-of-Pizza-pizza-7383219-1600-1200.jpg&ehk=Nr%2f8Tpc4Z3p5bgSOdOEWHlN1XJS1y7jol5%2bkS6qXCpE%3d&risl=&pid=ImgRaw&r=0"
-                    height="100px" width="100px">
-            <td>
-                <%= rs.getInt(5) %>
-            </td>
-            <td>
-                <%= rs.getInt(6) %>
-            </td>
-            <td>
-                <%= rs.getInt(7) %>
-            </td>
-            <td>
-                <%= rs.getString(8) %>
-            </td>
+            <td><%= product.getId() %></td>
+            <td><%= product.getName() %></td>
+            <td><%= categoryMap.getOrDefault(product.getCategoryId(), "") %></td>
+            <td><img src="<%= product.getImage() %>" height="100px" width="100px"></td>
+            <td><%= product.getQuantity() %></td>
+            <td><%= String.format("%.2f", product.getPrice()) %></td>
+            <td><%= product.getWeight() %></td>
+            <td><%= product.getDescription() %></td>
 
             <td>
                 <form action="/buy" method="get">
@@ -125,28 +103,18 @@
                          class="bi bi-cart" viewBox="0 0 16 16">
                         <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
                     </svg>
-                    <input type="hidden" name="id" value="<%=rs.getInt(1)%>">
+                    <input type="hidden" name="id" value="<%= product.getId() %>">
                     <input type="submit" value="Buy" class="btn btn-info btn-lg">
-
                 </form>
             </td>
-            <td>
-
-
-            </td>
-
+            <td></td>
         </tr>
         <%
+                }
             }
         %>
-
         </tbody>
     </table>
-    <%
-        } catch (Exception ex) {
-            out.println("Exception Occurred:: " + ex.getMessage());
-        }
-    %>
 </div>
 
 

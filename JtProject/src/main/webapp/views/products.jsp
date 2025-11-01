@@ -1,9 +1,7 @@
-<%@page import="java.sql.*" %>
+<%@page import="com.jtspringproject.JtSpringProject.model.Product" %>
+<%@page import="com.jtspringproject.JtSpringProject.model.Category" %>
 <%@page import="java.util.*" %>
 <%@page import="java.text.*" %>
-<%@page import="java.io.FileOutputStream" %>
-<%@page import=" java.io.ObjectOutputStream" %>
-<%@ page import="javax.swing.plaf.nimbus.State" %>
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -84,119 +82,82 @@
             <th scope="col">Update</th>
         </tr>
         <tbody>
+            <%
+                List<Product> productList = (List<Product>) request.getAttribute("products");
+                List<Category> categoryList = (List<Category>) request.getAttribute("categories");
+                Map<Integer, String> categoryMap = new HashMap<>();
+                if (categoryList != null) {
+                    for (Category cat : categoryList) {
+                        categoryMap.put(cat.getCategoryId(), cat.getName());
+                    }
+                }
+
+                if (productList != null) {
+                    for (Product product : productList) {
+            %>
         <tr>
-
-            <%
-                try {
-                    String url = "jdbc:mysql://localhost:3306/springproject";
-                    Class.forName("com.mysql.cj.jdbc.Driver");
-                    Connection con = DriverManager.getConnection(url, "root", "12345678");
-                    Statement stmt = con.createStatement();
-                    Statement stmt2 = con.createStatement();
-                    Statement stmt3 = con.createStatement();
-                    Statement stmt4 = con.createStatement();
-                    ResultSet rs = stmt.executeQuery("select * from products");
-            %>
-            <%
-                while (rs.next()) {
-            %>
-            <td>
-                <%= rs.getInt(1) %>
-            </td>
-            <td>
-                <%= rs.getString(2) %>
-            </td>
+            <td><%= product.getId() %></td>
+            <td><%= product.getName() %></td>
+            <td><%= categoryMap.getOrDefault(product.getCategoryId(), "") %></td>
+            <td><img src="<%= product.getImage() %>" height="100px" width="100px"></td>
+            <td><%= product.getQuantity() %></td>
+            <td>$<%= String.format("%.2f", product.getPrice()) %></td>
+            <td><%= product.getDiscount() %></td>
+            <td><%= product.getWeight() %></td>
             <td>
                 <%
-                    int categoryid = rs.getInt(4);
-                    ResultSet rs2 = stmt2.executeQuery("select * from categories where categoryid = " + categoryid + ";");
-                    if (rs2.next()) {
-                        out.print(rs2.getString(2));
-                    }
-                %>
-
-            </td>
-
-            <td><img src="<%= rs.getString(3) %>" height="100px" width="100px"></td>
-            <td>
-                <%= rs.getInt(5) %>
-            </td>
-            <td>$<%= rs.getInt(6) %>
-            </td>
-            <td>
-                <%= rs.getDouble(9) %>
-            </td>
-            <td>
-                <%= rs.getInt(7) %>
-            </td>
-            <td>
-                <%
-                    int productPairId = rs.getInt(10);
-                    ResultSet rs3 = stmt3.executeQuery("select name from products where id = " + productPairId + ";");
-                    if (rs3.next()) {
-                        out.print(rs3.getString(1));
+                    int productPairId = product.getProductPair();
+                    if (productPairId > 0 && productList != null) {
+                        for (Product p : productList) {
+                            if (p.getId() == productPairId) {
+                                out.print(p.getName());
+                                break;
+                            }
+                        }
                     }
                 %>
             </td>
-
             <td>
-
-                    <%
-							int currentItemId = rs.getInt(1);
-							int currentSuggestedItem = rs.getInt(11);
-							ResultSet rs4 = stmt4.executeQuery("select * from products where id <> 0 AND id <> " + currentItemId + ";");
-							ArrayList<Integer> productIdArr = new ArrayList<Integer>();
-							ArrayList<String> productNameArr = new ArrayList<String>();
-							while(rs4.next()){
-								productIdArr.add(rs4.getInt(1));
-								productNameArr.add(rs4.getString(2));
-							}
-						%>
                 <form action="/suggestItem" method="get">
                     <label for="suggestedItem"></label>
                     <select id="suggestedItem" name="suggestedID">
-                        <%for (int i = 0; i < productIdArr.size(); i++) { %>
-                        <% if (productIdArr.get(i) == currentSuggestedItem) { %>
-                        <option value="<%=productIdArr.get(i)%>" selected><%=productNameArr.get(i)%>
-                        </option>
-                        <%} else {%>
-                        <option value="<%=productIdArr.get(i)%>"><%=productNameArr.get(i)%>
+                        <%
+                            int currentItemId = product.getId();
+                            int currentSuggestedItem = product.getSuggestedItem();
+                            for (Product p : productList) {
+                                if (p.getId() != 0 && p.getId() != currentItemId) {
+                        %>
+                        <option value="<%= p.getId() %>" <%= (p.getId() == currentSuggestedItem) ? "selected" : "" %>>
+                            <%= p.getName() %>
                         </option>
                         <%
                                 }
                             }
                         %>
                     </select>
-                    <input type="hidden" name="productID" value="<%=rs.getInt(1)%>">
+                    <input type="hidden" name="productID" value="<%= product.getId() %>">
                     <input type="submit">
                 </form>
-
+            </td>
             <td>
                 <form action="products/delete" method="get">
-                    <input type="hidden" name="id" value="<%=rs.getInt(1)%>">
+                    <input type="hidden" name="id" value="<%= product.getId() %>">
                     <input id="delete" type="submit" value="Delete" class="btn btn-danger">
                 </form>
             </td>
             <td>
                 <form action="products/update" method="get">
-                    <input type="hidden" name="pid" value="<%=rs.getInt(1)%>">
+                    <input type="hidden" name="pid" value="<%= product.getId() %>">
                     <input type="submit" value="Update" class="btn btn-warning">
                 </form>
-
             </td>
-
         </tr>
-        <%
-            }
-        %>
-
+            <%
+                    }
+                }
+            %>
         </tbody>
     </table>
-    <%
-        } catch (Exception ex) {
-            out.println("Exception Occurred:: " + ex.getMessage());
-        }
-    %>
 </div>
 
 

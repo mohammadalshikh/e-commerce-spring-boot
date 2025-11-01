@@ -1,4 +1,4 @@
-<%@page import="java.sql.*" %>
+<%@page import="com.jtspringproject.JtSpringProject.model.User" %>
 <%@page import="java.util.*" %>
 <%@page import="java.text.*" %>
 <!doctype html>
@@ -56,51 +56,25 @@
             <th scope="col">Cumulative Total</th>
         </tr>
         <tbody>
+            <%
+                List<User> users = (List<User>) request.getAttribute("users");
+                if (users != null) {
+                    for (User user : users) {
+            %>
         <tr>
-
-            <%
-                try {
-                    String url = "jdbc:mysql://localhost:3306/springproject";
-                    Class.forName("com.mysql.cj.jdbc.Driver");
-                    Connection con = DriverManager.getConnection(url, "root", "12345678");
-                    Statement stmt = con.createStatement();
-                    Statement stmt2 = con.createStatement();
-                    ResultSet rs = stmt.executeQuery("select * from users");
-            %>
-            <%
-                while (rs.next()) {
-            %>
-            <td>
-                <%= rs.getInt(1) %>
-            </td>
-            <td>
-                <%= rs.getString(2) %>
-            </td>
-            <td>
-                <%= rs.getString(6) %>
-            </td>
-            <td>
-                <%= rs.getString(5) %>
-            </td>
-            <td>
-                <%= rs.getInt(8)%>
-            </td>
-            <td>
-                <%= rs.getInt(7)%>
-            </td>
-
+            <td><%= user.getUserId() %></td>
+            <td><%= user.getUsername() %></td>
+            <td><%= user.getEmail() %></td>
+            <td><%= user.getAddress() != null ? user.getAddress() : "" %></td>
+            <td><%= user.getCoupons() %></td>
+            <td><%= String.format("%.2f", user.getCumulativeTotal()) %></td>
         </tr>
-        <%
-            }
-        %>
-
+            <%
+                    }
+                }
+            %>
         </tbody>
     </table>
-    <%
-        } catch (Exception ex) {
-            out.println("Exception Occurred:: " + ex.getMessage());
-        }
-    %>
 </div>
 
 

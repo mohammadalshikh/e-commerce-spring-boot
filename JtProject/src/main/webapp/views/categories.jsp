@@ -1,5 +1,6 @@
 <!doctype html>
-<%@page import="java.sql.*" %>
+<%@page import="com.jtspringproject.JtSpringProject.model.Category" %>
+<%@page import="java.util.*" %>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -95,38 +96,27 @@
         </thead>
         <tbody>
         <%
-            try {
-
-                String url = "jdbc:mysql://localhost:3306/springproject";
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                Connection con = DriverManager.getConnection(url, "root", "12345678");
-                Statement stmt = con.createStatement();
-                ResultSet rs = stmt.executeQuery("select * from categories");
-        %>
-        <%
-            while (rs.next()) {
+            List<Category> categoryList = (List<Category>) request.getAttribute("categories");
+            if (categoryList != null) {
+                for (Category category : categoryList) {
         %>
         <tr>
-            <td><%=rs.getInt(1)%>
-            </td>
-            <td><%=rs.getString(2)%>
-            </td>
+            <td><%= category.getCategoryId() %></td>
+            <td><%= category.getName() %></td>
 
             <td>
                 <form action="categories/delete" method="get">
-                    <input type="hidden" name="id" value="<%=rs.getInt(1)%>">
+                    <input type="hidden" name="id" value="<%= category.getCategoryId() %>">
                     <input type="submit" value="Delete" class="btn btn-danger">
                 </form>
             </td>
 
             <td>
                 <form action="categories/update" method="get">
-
-
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-warning" data-toggle="modal"
                             data-target="#exampleModalCenter2"
-                            onclick="document.getElementById('categoryname').value =  '<%=rs.getString(2)%>'; document.getElementById('categoryid').value =  '<%=rs.getString(1)%>'; ">
+                            onclick="document.getElementById('categoryname').value =  '<%= category.getName() %>'; document.getElementById('categoryid').value =  '<%= category.getCategoryId() %>'; ">
                         Update
                     </button>
 
@@ -175,15 +165,11 @@
 
         </tr>
         <%
+                }
             }
         %>
         </tbody>
     </table>
-    <%
-        } catch (Exception ex) {
-            out.println("Exception Occurred:: " + ex.getMessage());
-        }
-    %>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
