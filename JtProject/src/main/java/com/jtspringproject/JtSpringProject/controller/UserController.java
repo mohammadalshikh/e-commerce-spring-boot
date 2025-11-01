@@ -101,7 +101,7 @@ public class UserController {
                 "Inquiry Type: " + inquiryType + "\n\n" +
                 "We will get back to you as soon as possible.\n\nBest regards,\nThe BestFood Team";
 
-        sendEmail(email, "bestfood438@gmail.com", "Your Contact Request", userMessage);
+        sendEmail(email, "bestfood102@gmail.com", "Your Contact Request", userMessage);
 
         // Code to send the second email to the admin email
         String adminMessage = "A new contact request has been submitted:\n\n" +
@@ -112,7 +112,7 @@ public class UserController {
                 "Subscribe to newsletter: " + (subscribe ? "Yes" : "No") + "\n" +
                 "Inquiry Type: " + inquiryType + "\n";
 
-        sendEmail("bestfood438@gmail.com", email, "New Contact Request", adminMessage);
+        sendEmail("bestfood102@gmail.com", email, "New Contact Request", adminMessage);
 
         redirectAttributes.addFlashAttribute("successMessage", "Your contact request has been submitted successfully!");
 
@@ -125,7 +125,7 @@ public class UserController {
         // SMTP server configuration
         String host = "smtp.gmail.com";
         String port = "587";
-        String username = "bestfood438@gmail.com";
+        String username = "bestfood102@gmail.com";
         String password = "niwmagtnrxcdcehq";
 
 
