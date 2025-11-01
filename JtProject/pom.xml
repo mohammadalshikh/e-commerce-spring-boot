@@ -11,6 +11,7 @@
 	<groupId>com.jtspringproject</groupId>
 	<artifactId>JtSpringProject</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<name>JtSpringProject</name>
 	<description>Spring project for Java Technology</description>
 	<properties>
@@ -69,11 +70,23 @@
 
 	<build>
 		<plugins>
+			<!-- Spring Boot plugin -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
+			<!-- WAR plugin so JSPs get included -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.3.2</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+
 
 </project>
